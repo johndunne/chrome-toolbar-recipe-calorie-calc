@@ -1,0 +1,24 @@
+{
+  "name": "Recipe Calorie Calculator (Toolbar))",
+  "version": "0.0.1",
+  "description": "Adds a textbox to copy and paste your recipe ingredients.",
+  "icons": { "128": "icon.png" },
+  "background": { "scripts": ["background.js"] },
+  "content_scripts": [
+    { "matches": ["http://*/*"], "js": ["mappy_content_script.js"] }
+  ],
+  "permissions": [
+    "storage",
+    "tabs",
+    "https://recipecalcalc.com/*",
+    "https://api.recipecalcalc.com/*",
+    "http://localhost:1243/*"
+  ],
+  "browser_action": {
+      "default_name": "Display Map",
+      "default_icon": "marker.png",
+      "default_popup": "popup.html"
+  },
+  "manifest_version": 2,
+  "content_security_policy": "default-src 'none'; style-src 'self'; script-src 'self' 'unsafe-eval'; object-src 'self'; connect-src https://recipecalcalc.com/ http://localhost:1243/; img-src https://maps.google.com"
+}
