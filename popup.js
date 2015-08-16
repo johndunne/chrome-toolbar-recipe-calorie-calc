@@ -65,7 +65,7 @@ function map() {
     var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
     
   //initRecipeCalCalc("recipecalcalc.com/api", { user_id:user_id });
-  initRecipeCalCalc("localhost:1243", { user_id:user_id, scheme:"http" });
+  initRecipeCalCalc("localhost:1243", { user_id:user_id, scheme:"http",debug:true });
 
   //var recipe_url = chrome.extension.getBackgroundPage().selectedRecipe;
   //console.log(chrome.extension.getBackgroundPage());
@@ -84,10 +84,13 @@ function map() {
       $("#recipe_ingredients").keyup( function(e){
           var postData = $("#recipe_ingredients").val().split("\n");
           //ga('set', 'parse_ingredients', 'len_' + postData.length);
-          console.log("Sending ingredients:");
-          console.log(postData);
-
-          parseIngredients(postData,function(recipe,error){
+          //console.log("Sending ingredients:");
+          //console.log(postData);
+          var options = {};
+          if($("#recipe_portions").val()>0){
+            options.portions = $("#recipe_portions").val();
+          }
+          parseIngredients(postData, options,function(recipe,error){
               if( error ){
                   console.error(error);
               }else {
