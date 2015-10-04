@@ -28,7 +28,6 @@ console.log(sendResponse);
 
     }
   });
-
 }
 
 function getRandomToken() {

@@ -7,10 +7,23 @@ var addresses = {};
 var selectedRecipe = null;
 var selectedId = null;
 var uniqueUserID = null;
+var currentIngredientBoxContent = "";
+var currentRecipeName = "";
+var currentRecipePortions = 0;
+
+chrome.storage.sync.get('currentIngredientBoxContent', function(items) {
+  currentIngredientBoxContent = items.currentIngredientBoxContent;
+});
+chrome.storage.sync.get('currentRecipeName', function(items) {
+  currentRecipeName = items.currentRecipeName;
+});
+chrome.storage.sync.get('currentRecipePortions', function(items) {
+  currentRecipePortions = items.currentRecipePortions;
+});
+
+//chrome.browserAction.setBadgeText({text: "yeah"});
 
 function updateRecipe(tabId) {
-  console.log("updateRecipe:" + tabId);
-  console.log(addresses[tabId]);
   chrome.tabs.sendRequest(tabId, {}, function(recipe_url) {
     if(recipe_url){
       console.log("updateRecipe->: recipe_url:" + recipe_url);
@@ -28,8 +41,6 @@ function updateRecipe(tabId) {
 }
 
 function updateSelected(tabId) {
-  console.log("updateSelected:" + tabId);
-  console.log(addresses[tabId]);
   selectedRecipe = addresses[tabId];
   if (selectedRecipe){
     chrome.storage.sync.get('userid', function(items) {
@@ -44,13 +55,34 @@ function updateSelected(tabId) {
       }
       function useToken(userid) {
         uniqueUserID = userid;
-        console.log( "user  bg id = " + userid);
       }
     });
-
     chrome.pageAction.setTitle({tabId:tabId, title:selectedRecipe});
   }
 }
+
+function saveRecipeNameContent( content ){
+    currentRecipeName = content;
+    chrome.storage.sync.set({currentRecipeName: content}, function() {
+      console.log("Saved");
+    });
+}
+
+function saveRecipePortionsContent( content ){
+    currentRecipePortions = content;
+      console.log(content);
+    chrome.storage.sync.set({currentRecipePortions: content}, function() {
+      console.log("Saved");
+    });
+}
+
+function saveIngredientsContent( content ){
+    currentIngredientBoxContent = content;
+    chrome.storage.sync.set({currentIngredientBoxContent: content}, function() {
+      console.log("Saved");
+    });
+}
+
 function getRandomToken() {
     // E.g. 8 * 32 = 256 bits token
     var randomPool = new Uint8Array(32);
