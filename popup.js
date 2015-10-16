@@ -69,8 +69,8 @@ function _internalUpdateUIWithParsedIngredients(){
   // Parse ingredient's results in the array of ingredients being POSTed to the recipe api server
   // and the results being parsed into a recipe object.
   parseIngredients(postData, options,function(recipe,error){
-      if( error ){
-          console.error(error);
+      if( recipe===false ){
+          ShowGeneralError(error);
       }else {
           getTextTemplate("recipe-template", function (source) {
               var template = Handlebars.compile(source);
@@ -100,7 +100,6 @@ function map() {
   } );
 
     Zepto(function ($) {
-
         function showParseIngredients() {
             getTextTemplate("parse-ingredients-template", function (source) {
                 var template = Handlebars.compile(source);
@@ -118,9 +117,9 @@ function map() {
                     recipe_object.name = $("#recipe_name").val();
                     CreateRecipe(recipe_object, function (success, data_in) {
                         if (success === true) {
-                            $("#recipe_error_message").html("Th");
+                            ShowMyRecipes();
                         } else {
-                            $("#recipe_error_message").html(data_in);
+                            ShowGeneralError(data_in);
                         }
                     });
                 });
@@ -154,7 +153,7 @@ function map() {
                     // and the local HTML page refreshing with the new values.
                     refreshIngredients(options, function (recipe, error) {
                         if (error) {
-                            console.error(error);
+                            ShowGeneralError(error);
                         } else {
                             getTextTemplate("recipe-template", function (source) {
                                 var template = Handlebars.compile(source);
@@ -206,23 +205,71 @@ function map() {
         });
 
         $("#load-my-recipes").click(function () {
-            FetchMyRecipes({},function(success,data_in){
-                if(success) {
-                    getTextTemplate("my-recipes-template", function (source) {
-                        var template = Handlebars.compile(source);
-                        var info = template({recipes:data_in});
-                        $('#recipe-content').html(info);
-                    });
-                    $('#recipe_error_message').text("");
-                }else{
-                    $('#recipe-content').html("");
-                    $('#recipe_error_message').text(error);
-                }
-            });
+            ShowMyRecipes();
         });
     });
-}     
+}
 
+function FetchSingleRecipe(recipe_id){
+    FetchSingleRecipeAPI( recipe_id ,{},function(success,recipe){
+        if(success) {
+            console.log(recipe);
+            getTextTemplate("my-recipes-template", function (source) {
+                var template = Handlebars.compile(source);
+                var info = template({recipes:recipe});
+                $('#recipe-content').html(info);
+            });
+            $('#recipe_error_message').text("");
+        }else{
+            ShowGeneralError("Failed to load your recipes. Connect to server error.");
+        }
+    });
+}
+
+function FetchRecipeSuperObject(recipe_id){
+    FetchRecipeSuperObjectAPI( recipe_id ,{nutritionLabel:{}},function(success,recipe){
+        if(success) {
+            getTextTemplate("super-recipe-template", function (source) {
+                var template = Handlebars.compile(source);
+                var info = template(recipe);
+                $('#recipe-content').html(info);
+                $('#nutrition-label').nutritionLabel( recipe.nutritionLabel );
+            });
+            $('#recipe_error_message').text("");
+        }else{
+            ShowGeneralError("Failed to load your recipes. Connect to server error.");
+        }
+    });
+}
+
+function ShowMyRecipes(){
+    FetchMyRecipesAPI({},function(success,data_in){
+        if(success) {
+            getTextTemplate("my-recipes-template", function (source) {
+                var template = Handlebars.compile(source);
+                var info = template({recipes:data_in});
+                $('#recipe-content').html(info);
+
+                $('[clickable="true"]').click(function(){
+                    FetchRecipeSuperObject($(this).attr("recipe_id"));
+                });
+            });
+            $('#recipe_error_message').text("");
+        }else{
+            ShowGeneralError("Failed to load your recipes. Connect to server error.");
+        }
+    });
+}
+
+function ShowGeneralError(error_message){
+    console.trace();
+    getTextTemplate("general-error-template", function (source) {
+        var template = Handlebars.compile(source);
+        var info = template({error_message:error_message});
+        $('#recipe-content').html(info);
+    });
+
+}
 function rateRecipe( rating ){
   console.log("Setting rating: " + rating);
     var request = new XMLHttpRequest();

@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Popup</title>
+      <link rel='stylesheet' type='text/css' media='screen' href='css/nutritionLabel-min.css'>
     <link href="css/popup.css" rel="stylesheet" type="text/css">
     <link href="css/bootstrap.css" rel="stylesheet">
     <script src='jquery-1.10.2.js'> </script>
@@ -32,10 +33,8 @@
       </div>
     </nav>
 
-    <div class="container-narrow">
-      <div class="jumbotron">
-          <div class="border-radius-large" id="recipe-content"></div>
-      </div>
+    <div class="container">
+      <div class="border-radius-large" id="recipe-content"></div>
   </div>
 
 <script id="parse-ingredients-template" type="text/template">
@@ -69,6 +68,17 @@
     </div>
 
 </script>
+<script id="general-error-template" type="text/template">
+    <div class="panel panel-danger">
+        <div class="panel-heading clearfix">
+            <i class="icon-calendar"></i>
+            <h3 class="panel-title">Error</h3>
+        </div>
+        <div class="panel-body">
+            {{error_message}}
+        </div>
+    </div>
+</script>
 <script id="recipe-template" type="text/template">
     <div>
         <h1 for="recipe_ingredients">Nutritional information: </h1>
@@ -81,7 +91,7 @@
           {{#if header}}
           <tr><td colspan="6"><strong>{{ingredient_line}}</strong></td></tr>
           {{else}}
-        <tr><td><span id="name_{{seq}}" seq="{{seq}}" changeable_food data-toggle="tooltip" title="{{debug_output}}" grams="{{amount}}" food_id="{{food_id}}">{{ingredient_line}}</span><img src="images/available_updates-26.png" width="24" height="24"></td>
+        <tr><td><span id="name_{{seq}}" seq="{{seq}}" changeable_food data-toggle="tooltip" title="{{debug_output}}" grams="{{amount}}" food_id="{{food_id}}">{{ingredient_line}}&nbsp;<img src="images/05-shuffle.png" width="14" height="10" changeable_food grams="{{amount}}" food_id="{{food_id}}" seq="{{seq}}" ></span></td>
             <td><span id="calories_for_{{seq}}">{{calories}}</span></td>
             <td><span id="amount_for_{{seq}}">{{amount}}{{unit}}</span></td>
             <td><span id="total_fat_for_{{seq}}">{{total_fat}}g</span></td>
@@ -113,13 +123,145 @@
     <table class="table table-striped table-bordered table-condensed">
         <tr><th>Recipe</th><th>Calories <small>per portion</small><th>Fat<small>per portion</small><th>Sugar<small>per portion</small><th>Protein<small>per portion</small></tr>
         {{#recipes}}
-        <tr><td><span>{{name}}</span></td>
+        <tr><td><span><a clickable="true" recipe_id="{{recipe_id}}">{{name}}</a></span></td>
             <td><span>{{calories}}</span></td>
             <td><span>{{total_fat}}g</span></td>
             <td><span>{{total_sugar}}g</span></td>
             <td><span>{{protein}}g</span></td>
           </tr>
         {{/recipes}}
+    </table>
+</script>
+
+<script id="single-recipe-template" type="text/template">
+    <table class="table table-striped table-bordered table-condensed">
+        <tr><th>Recipe</th><th>Calories <small>per portion</small><th>Fat<small>per portion</small><th>Sugar<small>per portion</small><th>Protein<small>per portion</small></tr>
+        {{#recipes}}
+        <tr><td><span><a clickable="true" recipe_id="{{recipe_id}}">{{name}}</a></span></td>
+            <td><span>{{calories}}</span></td>
+            <td><span>{{total_fat}}g</span></td>
+            <td><span>{{total_sugar}}g</span></td>
+            <td><span>{{protein}}g</span></td>
+          </tr>
+        {{/recipes}}
+    </table>
+</script>
+
+<script id="super-recipe-template" type="text/template">
+    <table class="table table-striped table-bordered table-condensed">
+        <tr><th>Recipe</th><td>{{name}}</td><td colspan="4" rowspan="10"><div id="nutrition-label"></div></td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_calories">calories</th><td>{{calories}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_carbs">carbs</th><td>{{carbs}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_total_sugar">total_sugar</th><td>{{total_sugar}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_sat_fat">sat_fat</th><td>{{sat_fat}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_protein">protein</th><td>{{protein}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_poly_fat">poly_fat</th><td>{{poly_fat}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_total_fat">total_fat</th><td>{{total_fat}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_alpha_carot">alpha_carot</th><td>{{alpha_carot}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_beta_carot">beta_carot</th><td>{{beta_carot}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_beta_crypt">beta_crypt</th><td>{{beta_crypt}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_calcium">calcium</th><td>{{calcium}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_cholestrl">cholestrl</th><td>{{cholestrl}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_choline_tot">choline_tot</th><td>{{choline_tot}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_copper">copper</th><td>{{copper}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_fiber_td">fiber_td</th><td>{{fiber_td}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_folate_dfe">folate_dfe</th><td>{{folate_dfe}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_folate_tot">folate_tot</th><td>{{folate_tot}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_folic_acid">folic_acid</th><td>{{folic_acid}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_food_folate">food_folate</th><td>{{food_folate}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_food_id">food_id</th><td>{{food_id}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_food_weight">food_weight</th><td>{{food_weight}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_ingredient_line">ingredient_line</th><td>{{ingredient_line}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_iron">iron</th><td>{{iron}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_lut_zea">lut_zea</th><td>{{lut_zea}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_lycopene">lycopene</th><td>{{lycopene}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_magnesium">magnesium</th><td>{{magnesium}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_manganese">manganese</th><td>{{manganese}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_mono_fat">mono_fat</th><td>{{mono_fat}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_multiplier">multiplier</th><td>{{multiplier}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_nut_food_id">nut_food_id</th><td>{{nut_food_id}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_phosphorus">phosphorus</th><td>{{phosphorus}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_potassium">potassium</th><td>{{potassium}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_retinol">retinol</th><td>{{retinol}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_selenium">selenium</th><td>{{selenium}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_shrt_desc">shrt_desc</th><td>{{shrt_desc}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_sodium">sodium</th><td>{{sodium}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_vit_a_iu">vit_a_iu</th><td>{{vit_a_iu}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_vit_a_rae">vit_a_rae</th><td>{{vit_a_rae}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_vit_b1">vit_b1</th><td>{{vit_b1}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_vit_b2">vit_b2</th><td>{{vit_b2}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_vit_b3">vit_b3</th><td>{{vit_b3}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_vit_b5">vit_b5</th><td>{{vit_b5}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_vit_b6">vit_b6</th><td>{{vit_b6}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_vit_b12">vit_b12</th><td>{{vit_b12}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_vit_c">vit_c</th><td>{{vit_c}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_vit_d_iu">vit_d_iu</th><td>{{vit_d_iu}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_vit_d_mcg">vit_d_mcg</th><td>{{vit_d_mcg}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_vit_e">vit_e</th><td>{{vit_e}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_vit_k">vit_k</th><td>{{vit_k}}</td></tr>
+        <tr><th id="recipe_td_{{recipe_id}}_water">water</th><td>{{water}}</td></tr>
+        <tr><th id="recipe_trecirecipe_d_{{irecipe_id}}_zinc">zinc</th><td>{{zinc}}</td></tr>
+    </table>
+
+    <table class="table table-striped table-bordered table-condensed">
+
+    {{#nutrition}}
+        <tr>
+            <td id="td_{{ingredient_id}}_common_name"><span>{{common_name}}</span></td>
+            <td id="td_{{ingredient_id}}_calories"><span>{{calories}}</span></td>
+            <td id="td_{{ingredient_id}}_carbs"><span>{{carbs}}</span></td>
+            <td id="td_{{ingredient_id}}_total_sugar"><span>{{total_sugar}}</span></td>
+            <td id="td_{{ingredient_id}}_sat_fat"><span>{{sat_fat}}</span></td>
+            <td id="td_{{ingredient_id}}_protein"><span>{{protein}}</span></td>
+            <td id="td_{{ingredient_id}}_poly_fat"><span>{{poly_fat}}</span></td>
+            <td id="td_{{ingredient_id}}_total_fat"><span>{{total_fat}}</span></td>
+            <td id="td_{{ingredient_id}}_alpha_carot"><span>{{alpha_carot}}</span></td>
+            <td id="td_{{ingredient_id}}_amount"><span>{{amount}}{{amount_unit}}</span></td>
+            <td id="td_{{ingredient_id}}_beta_carot"><span>{{beta_carot}}</span></td>
+            <td id="td_{{ingredient_id}}_beta_crypt"><span>{{beta_crypt}}</span></td>
+            <td id="td_{{ingredient_id}}_calcium"><span>{{calcium}}</span></td>
+            <td id="td_{{ingredient_id}}_cholestrl"><span>{{cholestrl}}</span></td>
+            <td id="td_{{ingredient_id}}_choline_tot"><span>{{choline_tot}}</span></td>
+            <td id="td_{{ingredient_id}}_copper"><span>{{copper}}</span></td>
+            <td id="td_{{ingredient_id}}_fiber_td"><span>{{fiber_td}}</span></td>
+            <td id="td_{{ingredient_id}}_folate_dfe"><span>{{folate_dfe}}</span></td>
+            <td id="td_{{ingredient_id}}_folate_tot"><span>{{folate_tot}}</span></td>
+            <td id="td_{{ingredient_id}}_folic_acid"><span>{{folic_acid}}</span></td>
+            <td id="td_{{ingredient_id}}_food_folate"><span>{{food_folate}}</span></td>
+            <td id="td_{{ingredient_id}}_food_id"><span>{{food_id}}</span></td>
+            <td id="td_{{ingredient_id}}_food_weight"><span>{{food_weight}}</span></td>
+            <td id="td_{{ingredient_id}}_ingredient_line"><span>{{ingredient_line}}</span></td>
+            <td id="td_{{ingredient_id}}_iron"><span>{{iron}}</span></td>
+            <td id="td_{{ingredient_id}}_lut_zea"><span>{{lut_zea}}</span></td>
+            <td id="td_{{ingredient_id}}_lycopene"><span>{{lycopene}}</span></td>
+            <td id="td_{{ingredient_id}}_magnesium"><span>{{magnesium}}</span></td>
+            <td id="td_{{ingredient_id}}_manganese"><span>{{manganese}}</span></td>
+            <td id="td_{{ingredient_id}}_mono_fat"><span>{{mono_fat}}</span></td>
+            <td id="td_{{ingredient_id}}_multiplier"><span>{{multiplier}}</span></td>
+            <td id="td_{{ingredient_id}}_nut_food_id"><span>{{nut_food_id}}</span></td>
+            <td id="td_{{ingredient_id}}_phosphorus"><span>{{phosphorus}}</span></td>
+            <td id="td_{{ingredient_id}}_potassium"><span>{{potassium}}</span></td>
+            <td id="td_{{ingredient_id}}_retinol"><span>{{retinol}}</span></td>
+            <td id="td_{{ingredient_id}}_selenium"><span>{{selenium}}</span></td>
+            <td id="td_{{ingredient_id}}_shrt_desc"><span>{{shrt_desc}}</span></td>
+            <td id="td_{{ingredient_id}}_sodium"><span>{{sodium}}</span></td>
+            <td id="td_{{ingredient_id}}_vit_a_iu"><span>{{vit_a_iu}}</span></td>
+            <td id="td_{{ingredient_id}}_vit_a_rae"><span>{{vit_a_rae}}</span></td>
+            <td id="td_{{ingredient_id}}_vit_b1"><span>{{vit_b1}}</span></td>
+            <td id="td_{{ingredient_id}}_vit_b2"><span>{{vit_b2}}</span></td>
+            <td id="td_{{ingredient_id}}_vit_b3"><span>{{vit_b3}}</span></td>
+            <td id="td_{{ingredient_id}}_vit_b5"><span>{{vit_b5}}</span></td>
+            <td id="td_{{ingredient_id}}_vit_b6"><span>{{vit_b6}}</span></td>
+            <td id="td_{{ingredient_id}}_vit_b12"><span>{{vit_b12}}</span></td>
+            <td id="td_{{ingredient_id}}_vit_c"><span>{{vit_c}}</span></td>
+            <td id="td_{{ingredient_id}}_vit_d_iu"><span>{{vit_d_iu}}</span></td>
+            <td id="td_{{ingredient_id}}_vit_d_mcg"><span>{{vit_d_mcg}}</span></td>
+            <td id="td_{{ingredient_id}}_vit_e"><span>{{vit_e}}</span></td>
+            <td id="td_{{ingredient_id}}_vit_k"><span>{{vit_k}}</span></td>
+            <td id="td_{{ingredient_id}}_water"><span>{{water}}</span></td>
+            <td id="td_{{ingredient_id}}_zinc"><span>{{zinc}}</span></td>
+          </tr>
+    {{/nutrition}}
     </table>
 </script>
 
@@ -289,9 +431,10 @@
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 </script>
 
-  <script src="popup.js"></script>
-  <script src="tally-recipe-calorie-client.js"></script>
-<script src=zepto.min.js></script>
-<script src=handlebars.min.js></script>
+    <script src="popup.js"></script>
+    <script type="text/javascript" src="nutritionLabel.js"></script>
+    <script src="tally-recipe-calorie-client.js"></script>
+    <script src=zepto.min.js></script>
+    <script src=handlebars.min.js></script>
   </body>
 </html>
