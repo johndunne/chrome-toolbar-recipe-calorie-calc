@@ -1,7 +1,9 @@
 <!doctype html>
 <html>
   <head>
-    <title>Popup</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+      <title>Popup</title>
       <link rel='stylesheet' type='text/css' media='screen' href='css/nutritionLabel-min.css'>
     <link href="css/popup.css" rel="stylesheet" type="text/css">
     <link href="css/bootstrap.css" rel="stylesheet">
@@ -11,12 +13,12 @@
     <nav class="navbar navbar-default navbar-static-top">
       <div class="container">
         <ul class="nav navbar-nav">
-          <button type="button" class="btn btn-default btn-sm" id="clear-ingredients">
+          <!--button type="button" class="btn btn-default btn-sm" id="clear-ingredients">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Clear
           </button>
           <button type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-apple" aria-hidden="true"></span> Save
-          </button>
+          </button-->
           <button type="button" class="btn btn-default btn-sm" id="show-parse-ingredients">
             <span class="glyphicon glyphicon-apple" aria-hidden="true"></span> Parse
           </button>
@@ -37,11 +39,11 @@
       <div class="border-radius-large" id="recipe-content"></div>
   </div>
 
-<script id="parse-ingredients-template" type="text/template">
-    <div class="bg-success container">
+<script id="parse-ingredients-template" type="text/template" charset="utf-8">
+    <div class="container">
         <div class="border-radius-large" id="parsed-ingredients-content"></div>
         <form>
-            <div class="bg-info container-fluid">
+            <div class="container-fluid">
                 <div class="row">
                     <div class="col-xs-12">
                         <h1 for="recipe_ingredients">Ingredients: </h1>
@@ -59,6 +61,7 @@
                         <input type="text" placeholder="Number of portions" class="form-control" id="recipe_portions" name="portions">
                     </div>
                     <div class="col-xs-2">
+                        <label for="recipe_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                         <button style="padding-top:20px" class="btn btn-primary" id="save-recipe">Save</button>
                     </div>
                 </div>
@@ -68,7 +71,7 @@
     </div>
 
 </script>
-<script id="general-error-template" type="text/template">
+<script id="general-error-template" type="text/template" charset="utf-8">
     <div class="panel panel-danger">
         <div class="panel-heading clearfix">
             <i class="icon-calendar"></i>
@@ -79,7 +82,7 @@
         </div>
     </div>
 </script>
-<script id="recipe-template" type="text/template">
+<script id="recipe-template" type="text/template" charset="utf-8">
     <div>
         <h1 for="recipe_ingredients">Nutritional information: </h1>
         <small>Enter the ingredients here and a sous bot will tally up the ingredient nutrition for you.</small>
@@ -119,7 +122,7 @@
     </table>
 </script>
 
-<script id="my-recipes-template" type="text/template">
+<script id="my-recipes-template" type="text/template" charset="utf-8">
     <table class="table table-striped table-bordered table-condensed">
         <tr><th>Recipe</th><th>Calories <small>per portion</small><th>Fat<small>per portion</small><th>Sugar<small>per portion</small><th>Protein<small>per portion</small></tr>
         {{#recipes}}
@@ -133,7 +136,7 @@
     </table>
 </script>
 
-<script id="single-recipe-template" type="text/template">
+<script id="single-recipe-template" type="text/template" charset="utf-8">
     <table class="table table-striped table-bordered table-condensed">
         <tr><th>Recipe</th><th>Calories <small>per portion</small><th>Fat<small>per portion</small><th>Sugar<small>per portion</small><th>Protein<small>per portion</small></tr>
         {{#recipes}}
@@ -147,64 +150,115 @@
     </table>
 </script>
 
-<script id="super-recipe-template" type="text/template">
+<script id="super-recipe-template" type="text/template" charset="utf-8">
     <table class="table table-striped table-bordered table-condensed">
-        <tr><th>Recipe</th><td>{{name}}</td><td colspan="4" rowspan="10"><div id="nutrition-label"></div></td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_calories">calories</th><td>{{calories}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_carbs">carbs</th><td>{{carbs}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_total_sugar">total_sugar</th><td>{{total_sugar}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_sat_fat">sat_fat</th><td>{{sat_fat}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_protein">protein</th><td>{{protein}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_poly_fat">poly_fat</th><td>{{poly_fat}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_total_fat">total_fat</th><td>{{total_fat}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_alpha_carot">alpha_carot</th><td>{{alpha_carot}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_beta_carot">beta_carot</th><td>{{beta_carot}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_beta_crypt">beta_crypt</th><td>{{beta_crypt}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_calcium">calcium</th><td>{{calcium}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_cholestrl">cholestrl</th><td>{{cholestrl}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_choline_tot">choline_tot</th><td>{{choline_tot}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_copper">copper</th><td>{{copper}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_fiber_td">fiber_td</th><td>{{fiber_td}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_folate_dfe">folate_dfe</th><td>{{folate_dfe}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_folate_tot">folate_tot</th><td>{{folate_tot}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_folic_acid">folic_acid</th><td>{{folic_acid}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_food_folate">food_folate</th><td>{{food_folate}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_food_id">food_id</th><td>{{food_id}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_food_weight">food_weight</th><td>{{food_weight}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_ingredient_line">ingredient_line</th><td>{{ingredient_line}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_iron">iron</th><td>{{iron}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_lut_zea">lut_zea</th><td>{{lut_zea}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_lycopene">lycopene</th><td>{{lycopene}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_magnesium">magnesium</th><td>{{magnesium}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_manganese">manganese</th><td>{{manganese}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_mono_fat">mono_fat</th><td>{{mono_fat}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_multiplier">multiplier</th><td>{{multiplier}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_nut_food_id">nut_food_id</th><td>{{nut_food_id}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_phosphorus">phosphorus</th><td>{{phosphorus}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_potassium">potassium</th><td>{{potassium}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_retinol">retinol</th><td>{{retinol}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_selenium">selenium</th><td>{{selenium}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_shrt_desc">shrt_desc</th><td>{{shrt_desc}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_sodium">sodium</th><td>{{sodium}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_vit_a_iu">vit_a_iu</th><td>{{vit_a_iu}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_vit_a_rae">vit_a_rae</th><td>{{vit_a_rae}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_vit_b1">vit_b1</th><td>{{vit_b1}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_vit_b2">vit_b2</th><td>{{vit_b2}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_vit_b3">vit_b3</th><td>{{vit_b3}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_vit_b5">vit_b5</th><td>{{vit_b5}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_vit_b6">vit_b6</th><td>{{vit_b6}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_vit_b12">vit_b12</th><td>{{vit_b12}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_vit_c">vit_c</th><td>{{vit_c}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_vit_d_iu">vit_d_iu</th><td>{{vit_d_iu}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_vit_d_mcg">vit_d_mcg</th><td>{{vit_d_mcg}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_vit_e">vit_e</th><td>{{vit_e}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_vit_k">vit_k</th><td>{{vit_k}}</td></tr>
-        <tr><th id="recipe_td_{{recipe_id}}_water">water</th><td>{{water}}</td></tr>
-        <tr><th id="recipe_trecirecipe_d_{{irecipe_id}}_zinc">zinc</th><td>{{zinc}}</td></tr>
+        <tr><th>Recipe</th><td colspan="5" >{{name}}</td></tr>
+        <tr><th>Nutrition</th><th>Amount</th><td colspan="4" >{{name}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_calories">calories</th><td>{{calories}}</td><td colspan="4" rowspan="47"><div id="nutrition-label"></div></td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_carbs">carbs</th><td>{{carbs}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_total_sugar">total_sugar</th><td>{{total_sugar}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_sat_fat">sat_fat</th><td>{{sat_fat}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_protein">protein</th><td>{{protein}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_poly_fat">poly_fat</th><td>{{poly_fat}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_total_fat">total_fat</th><td>{{total_fat}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_alpha_carot">alpha_carot</th><td>{{alpha_carot}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_beta_carot">beta_carot</th><td>{{beta_carot}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_beta_crypt">beta_crypt</th><td>{{beta_crypt}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_calcium">calcium</th><td>{{calcium}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_cholestrl">cholestrl</th><td>{{cholestrl}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_choline_tot">choline_tot</th><td>{{choline_tot}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_copper">copper</th><td>{{copper}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_fiber_td">fiber_td</th><td>{{fiber_td}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_folate_dfe">folate_dfe</th><td>{{folate_dfe}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_folate_tot">folate_tot</th><td>{{folate_tot}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_folic_acid">folic_acid</th><td>{{folic_acid}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_food_folate">food_folate</th><td>{{food_folate}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_food_id">food_id</th><td>{{food_id}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_food_weight">food_weight</th><td>{{food_weight}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_iron">iron</th><td>{{iron}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_lut_zea">lut_zea</th><td>{{lut_zea}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_lycopene">lycopene</th><td>{{lycopene}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_magnesium">magnesium</th><td>{{magnesium}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_manganese">manganese</th><td>{{manganese}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_mono_fat">mono_fat</th><td>{{mono_fat}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_phosphorus">phosphorus</th><td>{{phosphorus}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_potassium">potassium</th><td>{{potassium}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_retinol">retinol</th><td>{{retinol}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_selenium">selenium</th><td>{{selenium}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_sodium">sodium</th><td>{{sodium}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_a_iu">vit_a_iu</th><td>{{vit_a_iu}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_a_rae">vit_a_rae</th><td>{{vit_a_rae}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b1">vit_b1</th><td>{{vit_b1}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b2">vit_b2</th><td>{{vit_b2}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b3">vit_b3</th><td>{{vit_b3}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b5">vit_b5</th><td>{{vit_b5}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b6">vit_b6</th><td>{{vit_b6}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b12">vit_b12</th><td>{{vit_b12}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_c">vit_c</th><td>{{vit_c}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_d_iu">vit_d_iu</th><td>{{vit_d_iu}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_d_mcg">vit_d_mcg</th><td>{{vit_d_mcg}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_e">vit_e</th><td>{{vit_e}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_k">vit_k</th><td>{{vit_k}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_water">water</th><td>{{water}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_trecirecipe_d_{{irecipe_id}}_zinc">zinc</th><td>{{zinc}}</td></tr>
     </table>
 
     <table class="table table-striped table-bordered table-condensed">
-
+        <tr>
+            <th><span nutritional-name-me>common_name</span></th>
+            <th><span nutritional-name-me>calories</span></th>
+            <th><span nutritional-name-me>carbs</span></th>
+            <th><span nutritional-name-me>total_sugar</span></th>
+            <th><span nutritional-name-me>sat_fat</span></th>
+            <th><span nutritional-name-me>protein</span></th>
+            <th><span nutritional-name-me>poly_fat</span></th>
+            <th><span nutritional-name-me>total_fat</span></th>
+            <th><span nutritional-name-me>alpha_carot</span></th>
+            <th><span nutritional-name-me>amount{{amount_unit}}</span></th>
+            <th><span nutritional-name-me>beta_carot</span></th>
+            <th><span nutritional-name-me>beta_crypt</span></th>
+            <th><span nutritional-name-me>calcium</span></th>
+            <th><span nutritional-name-me>cholestrl</span></th>
+            <th><span nutritional-name-me>choline_tot</span></th>
+            <th><span nutritional-name-me>copper</span></th>
+            <th><span nutritional-name-me>fiber_td</span></th>
+            <th><span nutritional-name-me>folate_dfe</span></th>
+            <th><span nutritional-name-me>folate_tot</span></th>
+            <th><span nutritional-name-me>folic_acid</span></th>
+            <th><span nutritional-name-me>food_folate</span></th>
+            <th><span nutritional-name-me>food_id</span></th>
+            <th><span nutritional-name-me>food_weight</span></th>
+            <th><span nutritional-name-me>ingredient_line</span></th>
+            <th><span nutritional-name-me>iron</span></th>
+            <th><span nutritional-name-me>lut_zea</span></th>
+            <th><span nutritional-name-me>lycopene</span></th>
+            <th><span nutritional-name-me>magnesium</span></th>
+            <th><span nutritional-name-me>manganese</span></th>
+            <th><span nutritional-name-me>mono_fat</span></th>
+            <th><span nutritional-name-me>multiplier</span></th>
+            <th><span nutritional-name-me>nut_food_id</span></th>
+            <th><span nutritional-name-me>phosphorus</span></th>
+            <th><span nutritional-name-me>potassium</span></th>
+            <th><span nutritional-name-me>retinol</span></th>
+            <th><span nutritional-name-me>selenium</span></th>
+            <th><span nutritional-name-me>shrt_desc</span></th>
+            <th><span nutritional-name-me>sodium</span></th>
+            <th><span nutritional-name-me>vit_a_iu</span></th>
+            <th><span nutritional-name-me>vit_a_rae</span></th>
+            <th><span nutritional-name-me>vit_b1</span></th>
+            <th><span nutritional-name-me>vit_b2</span></th>
+            <th><span nutritional-name-me>vit_b3</span></th>
+            <th><span nutritional-name-me>vit_b5</span></th>
+            <th><span nutritional-name-me>vit_b6</span></th>
+            <th><span nutritional-name-me>vit_b12</span></th>
+            <th><span nutritional-name-me>vit_c</span></th>
+            <th><span nutritional-name-me>vit_d_iu</span></th>
+            <th><span nutritional-name-me>vit_d_mcg</span></th>
+            <th><span nutritional-name-me>vit_e</span></th>
+            <th><span nutritional-name-me>vit_k</span></th>
+            <th><span nutritional-name-me>water</span></th>
+            <th><span nutritional-name-me>zinc</span></th>
+        </tr>
     {{#nutrition}}
         <tr>
             <td id="td_{{ingredient_id}}_common_name"><span>{{common_name}}</span></td>
@@ -265,7 +319,7 @@
     </table>
 </script>
 
-<script id="signup-template" type="text/template">
+<script id="signup-template" type="text/template" charset="utf-8">
     <div class="container">
         <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
             <div class="panel panel-info">
@@ -337,21 +391,16 @@
                 </div>
                 <div class="panel-body">
                     <form id="signupform" class="form-horizontal" role="form">
-
                         <div id="signupalert" style="display:none" class="alert alert-danger">
                             <p>Error:</p>
                             <span></span>
                         </div>
-
-
-
                         <div class="form-group">
                             <label for="email" class="col-md-3 control-label">Email</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" name="email" id="email" placeholder="Email Address">
                             </div>
                         </div>
-
                         <div class="form-group">
                             <label for="firstname" class="col-md-3 control-label">First Name</label>
                             <div class="col-md-9">
@@ -370,14 +419,12 @@
                                 <input type="password" class="form-control" name="passwd" id="password" placeholder="Password">
                             </div>
                         </div>
-
                         <div class="form-group">
                             <label for="icode" class="col-md-3 control-label">Invitation Code</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" name="icode" id="icode" placeholder="">
                             </div>
                         </div>
-
                         <div class="form-group">
                             <!-- Button -->
                             <div class="col-md-offset-3 col-md-9">
@@ -385,17 +432,11 @@
                                 <span style="margin-left:8px;">or</span>
                             </div>
                         </div>
-
                         <div style="border-top: 1px solid #999; padding-top:20px" class="form-group">
-
                             <div class="col-md-offset-3 col-md-9">
                                 <button id="btn-fbsignup" type="button" class="btn btn-primary"><i class="icon-facebook"></i> &nbsp; Sign Up with Facebook</button>
                             </div>
-
                         </div>
-
-
-
                     </form>
                 </div>
             </div>
@@ -407,9 +448,8 @@
     </div>
 </script>
 
-<script id="signin-template" type="text/template">
+<script id="signin-template" type="text/template" charset="utf-8">
     <div class="container">
-
         <form class="form-signin">
             <h2 class="form-signin-heading">Please sign in</h2>
             <label for="inputEmail" class="sr-only">Email address</label>
@@ -423,18 +463,17 @@
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         </form>
-
     </div> <!-- /container -->
+</script>
 
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
-</script>
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js" charset="utf-8"></script>
 
-    <script src="popup.js"></script>
-    <script type="text/javascript" src="nutritionLabel.js"></script>
-    <script src="tally-recipe-calorie-client.js"></script>
-    <script src=zepto.min.js></script>
-    <script src=handlebars.min.js></script>
+    <script src="popup.js" charset="utf-8"></script>
+    <script type="text/javascript" src="nutritionLabel.js" charset="utf-8"></script>
+    <script src="tally-recipe-calorie-client.js" charset="utf-8"></script>
+    <script src=zepto.min.js charset="utf-8"></script>
+    <script src=handlebars.min.js charset="utf-8"></script>
   </body>
 </html>

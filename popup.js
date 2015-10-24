@@ -234,6 +234,8 @@ function FetchRecipeSuperObject(recipe_id){
                 var info = template(recipe);
                 $('#recipe-content').html(info);
                 $('#nutrition-label').nutritionLabel( recipe.nutritionLabel );
+
+                vitaminChangeNames();
             });
             $('#recipe_error_message').text("");
         }else{
