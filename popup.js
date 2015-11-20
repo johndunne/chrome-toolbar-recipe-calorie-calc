@@ -85,8 +85,8 @@ function map() {
     var recipe_url = chrome.extension.getBackgroundPage().selectedRecipe;
     var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
     
-  //initRecipeCalCalc("recipecalcalc.com/api", { user_id:user_id });
-  initRecipeCalCalc("localhost:1243", { user_id:user_id, scheme:"http",debug:true });
+  initRecipeCalCalc("recipecalcalc.com/api", { user_id:user_id, scheme:"https",debug:true  });
+  //initRecipeCalCalc("localhost:1243", { user_id:user_id, scheme:"http",debug:true });
 
   //var recipe_url = chrome.extension.getBackgroundPage().selectedRecipe;
   //console.log(chrome.extension.getBackgroundPage());
@@ -237,6 +237,7 @@ function FetchRecipeSuperObject(recipe_id){
                 vitaminChangeNames();
             });
             $('#recipe_error_message').text("");
+            applyCSS();
         }else{
             ShowGeneralError("Failed to load your recipes. Connect to server error.");
         }

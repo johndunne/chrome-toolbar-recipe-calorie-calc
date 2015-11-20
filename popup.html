@@ -85,7 +85,7 @@
 <script id="recipe-template" type="text/template" charset="utf-8">
     <div>
         <h1 for="recipe_ingredients">Nutritional information: </h1>
-        <small>Enter the ingredients here and a sous bot will tally up the ingredient nutrition for you.</small>
+        <small>Below are the food's our sous bot has determined are in your recipe. <b>Change them by double clicking on the food item.</b></small>
     </div>
     {{description}}
     <table class="table table-striped table-bordered table-condensed">
@@ -124,7 +124,12 @@
 
 <script id="my-recipes-template" type="text/template" charset="utf-8">
     <table class="table table-striped table-bordered table-condensed">
-        <tr><th>Recipe</th><th>Calories <small>per portion</small><th>Fat<small>per portion</small><th>Sugar<small>per portion</small><th>Protein<small>per portion</small></tr>
+        <tr><td><h4>Recipe</h4></td>
+            <td><h4>Calories <small>per portion</small></h4></td>
+            <td><h4>Fat<small>per portion</small></h4></td>
+            <td><h4>Sugar<small>per portion</small></h4></td>
+            <td><h4>Protein<small>per portion</small></h4></td>
+        </tr>
         {{#recipes}}
         <tr><td><span><a clickable="true" recipe_id="{{recipe_id}}">{{name}}</a></span></td>
             <td><span class="calorie-number">{{calories}}</span></td>
@@ -138,7 +143,12 @@
 
 <script id="single-recipe-template" type="text/template" charset="utf-8">
     <table class="table table-striped table-bordered table-condensed">
-        <tr><th>Recipe</th><th>Calories <small>per portion</small><th>Fat<small>per portion</small><th>Sugar<small>per portion</small><th>Protein<small>per portion</small></tr>
+        <tr><th>Recipe</th>
+            <td><h4>Calories <small>per portion</small></h4></td>
+            <td><h4>Fat<small>per portion</small></h4></td>
+            <td><h4>Sugar<small>per portion</small></h4></td>
+            <td><h4>Protein<small>per portion</small></h4></td>
+        </tr>
         {{#recipes}}
         <tr><td><span><a clickable="true" recipe_id="{{recipe_id}}">{{name}}</a></span></td>
             <td><span class="calorie-number">{{calories}}</span></td>
@@ -154,53 +164,53 @@
     <table class="table table-striped table-bordered table-condensed">
         <tr><th>Recipe</th><td colspan="5" >{{name}}</td></tr>
         <tr><th>Nutrition</th><th>Amount</th><td colspan="4" >{{name}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_calories">calories</th><td class="calorie-number">{{calories}}</td><td colspan="4" rowspan="47"><div id="nutrition-label"></div></td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_carbs">carbs</th><td class="macro-nutrient-number">{{carbs}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_total_sugar">total_sugar</th><td class="macro-nutrient-number">{{total_sugar}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_sat_fat">sat_fat</th><td class="macro-nutrient-number">{{sat_fat}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_protein">protein</th><td class="macro-nutrient-number">{{protein}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_poly_fat">poly_fat</th><td class="macro-nutrient-number">{{poly_fat}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_total_fat">total_fat</th><td class="macro-nutrient-number">{{total_fat}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_alpha_carot">alpha_carot</th><td class="nutrient-number">{{alpha_carot}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_beta_carot">beta_carot</th><td class="nutrient-number">{{beta_carot}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_beta_crypt">beta_crypt</th><td class="nutrient-number">{{beta_crypt}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_calcium">calcium</th><td class="nutrient-number">{{calcium}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_cholestrl">cholestrl</th><td class="nutrient-number">{{cholestrl}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_choline_tot">choline_tot</th><td class="nutrient-number">{{choline_tot}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_copper">copper</th><td class="nutrient-number">{{copper}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_fiber_td">fiber_td</th><td class="nutrient-number">{{fiber_td}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_folate_dfe">folate_dfe</th><td class="nutrient-number">{{folate_dfe}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_folate_tot">folate_tot</th><td class="nutrient-number">{{folate_tot}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_folic_acid">folic_acid</th><td class="nutrient-number">{{folic_acid}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_food_folate">food_folate</th><td class="nutrient-number">{{food_folate}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_food_id">food_id</th><td class="nutrient-number">{{food_id}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_food_weight">food_weight</th><td class="nutrient-number">{{food_weight}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_iron">iron</th><td class="nutrient-number">{{iron}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_lut_zea">lut_zea</th><td class="nutrient-number">{{lut_zea}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_lycopene">lycopene</th><td class="nutrient-number">{{lycopene}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_magnesium">magnesium</th><td class="nutrient-number">{{magnesium}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_manganese">manganese</th><td class="nutrient-number">{{manganese}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_mono_fat">mono_fat</th><td class="nutrient-number">{{mono_fat}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_phosphorus">phosphorus</th><td class="nutrient-number">{{phosphorus}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_potassium">potassium</th><td class="nutrient-number">{{potassium}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_retinol">retinol</th><td class="nutrient-number">{{retinol}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_selenium">selenium</th><td class="nutrient-number">{{selenium}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_sodium">sodium</th><td class="nutrient-number">{{sodium}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_a_iu">vit_a_iu</th><td class="nutrient-number">{{vit_a_iu}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_a_rae">vit_a_rae</th><td class="nutrient-number">{{vit_a_rae}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b1">vit_b1</th><td class="nutrient-number">{{vit_b1}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b2">vit_b2</th><td class="nutrient-number">{{vit_b2}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b3">vit_b3</th><td class="nutrient-number">{{vit_b3}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b5">vit_b5</th><td class="nutrient-number">{{vit_b5}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b6">vit_b6</th><td class="nutrient-number">{{vit_b6}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b12">vit_b12</th><td class="nutrient-number">{{vit_b12}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_c">vit_c</th><td class="nutrient-number">{{vit_c}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_d_iu">vit_d_iu</th><td class="nutrient-number">{{vit_d_iu}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_d_mcg">vit_d_mcg</th><td class="nutrient-number">{{vit_d_mcg}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_e">vit_e</th><td class="nutrient-number">{{vit_e}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_k">vit_k</th><td class="nutrient-number">{{vit_k}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_water">water</th><td class="nutrient-number">{{water}}</td></tr>
-        <tr><th nutritional-name-me id="recipe_trecirecipe_d_{{irecipe_id}}_zinc">zinc</th><td class="nutrient-number">{{zinc}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_calories">calories</th><td class="calorie-number" unit="cals">{{calories}}</td><td>RDA</td><td colspan="3" rowspan="47"><div id="nutrition-label"></div></td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_carbs">carbs</th><td class="macro-nutrient-number" unit="{{carbs_unit}}">{{carbs}}</td><td class=rda"">{{provides.carbs}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_total_sugar">total_sugar</th><td class="macro-nutrient-number" unit="{{total_sugar_unit}}">{{total_sugar}}</td><td class="rda">{{provides.total_sugar}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_sat_fat">sat_fat</th><td class="macro-nutrient-number" unit="{{sat_fat_unit}}">{{sat_fat}}</td><td class="rda">{{provides.sat_fat}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_protein">protein</th><td class="macro-nutrient-number" unit="{{protein_unit}}">{{protein}}</td><td class="rda">{{provides.protein}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_poly_fat">poly_fat</th><td class="macro-nutrient-number" unit="{{poly_fat_unit}}">{{poly_fat}}</td><td class="rda">{{provides.poly_fat}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_total_fat">total_fat</th><td class="macro-nutrient-number" unit="{{total_fat_unit}}">{{total_fat}}</td><td class="rda">{{provides.total_fat}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_fiber_td">fiber_td</th><td class="nutrient-number" unit="{{fiber_td_unit}}">{{fiber_td}}</td><td class="rda">{{provides.fiber_td}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_food_id">food_id</th><td class="nutrient-number" unit="{{food_id_unit}}">{{food_id}}</td><td class="rda">{{provides.food_id}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_food_weight">food_weight</th><td class="nutrient-number" unit="{{food_weight_unit}}">{{food_weight}}</td><td class="rda">{{provides.food_weight}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_mono_fat">mono_fat</th><td class="nutrient-number" unit="{{mono_fat_unit}}">{{mono_fat}}</td><td class="rda">{{provides.mono_fat}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_alpha_carot">alpha_carot</th><td class="nutrient-number" unit="{{alpha_carot_unit}}">{{alpha_carot}}</td><td class="rda">{{provides.alpha_carot}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_beta_carot">beta_carot</th><td class="nutrient-number" unit="{{beta_carot_unit}}">{{beta_carot}}</td><td class="rda">{{provides.beta_carot}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_beta_crypt">beta_crypt</th><td class="nutrient-number" unit="{{beta_crypt_unit}}">{{beta_crypt}}</td><td class="rda">{{provides.beta_crypt}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_calcium">calcium</th><td class="nutrient-number" unit="{{calcium_unit}}">{{calcium}}</td><td class="rda">{{provides.calcium}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_cholestrl">cholestrl</th><td class="nutrient-number" unit="{{cholestrl_unit}}">{{cholestrl}}</td><td class="rda">{{provides.cholestrl}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_choline_tot">choline_tot</th><td class="nutrient-number" unit="{{choline_tot_unit}}">{{choline_tot}}</td><td class="rda">{{provides.choline_tot}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_copper">copper</th><td class="nutrient-number" unit="{{copper_unit}}">{{copper}}</td><td class="rda">{{provides.copper}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_folate_dfe">folate_dfe</th><td class="nutrient-number" unit="{{folate_dfe_unit}}">{{folate_dfe}}</td><td class="rda">{{provides.folate_dfe}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_folate_tot">folate_tot</th><td class="nutrient-number" unit="{{folate_tot_unit}}">{{folate_tot}}</td><td class="rda">{{provides.folate_tot}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_folic_acid">folic_acid</th><td class="nutrient-number" unit="{{folic_acid_unit}}">{{folic_acid}}</td><td class="rda">{{provides.folic_acid}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_food_folate">food_folate</th><td class="nutrient-number" unit="{{food_folate_unit}}">{{food_folate}}</td><td class="rda">{{provides.food_folate}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_iron">iron</th><td class="nutrient-number" unit="{{iron_unit}}">{{iron}}</td><td class="rda">{{provides.iron}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_lut_zea">lut_zea</th><td class="nutrient-number" unit="{{lut_zea_unit}}">{{lut_zea}}</td><td class="rda">{{provides.lut_zea}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_lycopene">lycopene</th><td class="nutrient-number" unit="{{lycopene_unit}}">{{lycopene}}</td><td class="rda">{{provides.lycopene}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_magnesium">magnesium</th><td class="nutrient-number" unit="{{magnesium_unit}}">{{magnesium}}</td><td class="rda">{{provides.magnesium}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_manganese">manganese</th><td class="nutrient-number" unit="{{manganese_unit}}">{{manganese}}</td><td class="rda">{{provides.manganese}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_phosphorus">phosphorus</th><td class="nutrient-number" unit="{{phosphorus_unit}}">{{phosphorus}}</td><td class="rda">{{provides.phosphorus}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_potassium">potassium</th><td class="nutrient-number" unit="{{potassium_unit}}">{{potassium}}</td><td class="rda">{{provides.potassium}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_retinol">retinol</th><td class="nutrient-number" unit="{{retinol_unit}}">{{retinol}}</td><td class="rda">{{provides.retinol}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_selenium">selenium</th><td class="nutrient-number" unit="{{selenium_unit}}">{{selenium}}</td><td class="rda">{{provides.selenium}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_sodium">sodium</th><td class="nutrient-number" unit="{{sodium_unit}}">{{sodium}}</td><td class="rda">{{provides.sodium}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_a_iu">vit_a_iu</th><td class="nutrient-number" unit="{{vit_a_iu_unit}}">{{vit_a_iu}}</td><td class="rda">{{provides.vit_a_iu}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_a_rae">vit_a_rae</th><td class="nutrient-number" unit="{{vit_a_rae_unit}}">{{vit_a_rae}}</td><td class="rda">{{provides.vit_a_rae}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b1">vit_b1</th><td class="nutrient-number" unit="{{vit_b1_unit}}">{{vit_b1}}</td><td class="rda">{{provides.vit_b1}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b2">vit_b2</th><td class="nutrient-number" unit="{{vit_b2_unit}}">{{vit_b2}}</td><td class="rda">{{provides.vit_b2}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b3">vit_b3</th><td class="nutrient-number" unit="{{vit_b3_unit}}">{{vit_b3}}</td><td class="rda">{{provides.vit_b3}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b5">vit_b5</th><td class="nutrient-number" unit="{{vit_b5_unit}}">{{vit_b5}}</td><td class="rda">{{provides.vit_b5}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b6">vit_b6</th><td class="nutrient-number" unit="{{vit_b6_unit}}">{{vit_b6}}</td><td class="rda">{{provides.vit_b6}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_b12">vit_b12</th><td class="nutrient-number" unit="{{vit_b12_unit}}">{{vit_b12}}</td><td class="rda">{{provides.vit_b12}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_c">vit_c</th><td class="nutrient-number" unit="{{vit_c_unit}}">{{vit_c}}</td><td class="rda">{{provides.vit_c}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_d_iu">vit_d_iu</th><td class="nutrient-number" unit="{{vit_d_iu_unit}}">{{vit_d_iu}}</td><td class="rda">{{provides.vit_d_iu}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_d_mcg">vit_d_mcg</th><td class="nutrient-number" unit="{{vit_d_mcg_unit}}">{{vit_d_mcg}}</td><td class="rda">{{provides.vit_d_mcg}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_e">vit_e</th><td class="nutrient-number" unit="{{vit_e_unit}}">{{vit_e}}</td><td class="rda">{{provides.vit_e}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_vit_k">vit_k</th><td class="nutrient-number" unit="{{vit_k_unit}}">{{vit_k}}</td><td class="rda">{{provides.vit_k}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_water">water</th><td class="nutrient-number" unit="{{water_unit}}">{{water}}</td><td class="rda">{{provides.water}}</td></tr>
+        <tr><th nutritional-name-me id="recipe_td_{{recipe_id}}_zinc">zinc</th><td class="nutrient-number" unit="{{zinc_unit}}">{{zinc}}</td><td class="rda">{{provides.zinc}}</td></tr>
     </table>
 
     <table class="table table-striped table-bordered table-condensed">
