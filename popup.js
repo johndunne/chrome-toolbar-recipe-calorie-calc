@@ -197,10 +197,27 @@ function map() {
         });
 
         $("#signup-button").click(function () {
-            getTextTemplate("signup-template", function (source) {
-                var template = Handlebars.compile(source);
-                var info = template({});
-                $('#recipe-content').html(info);
+            GetObject("me",{},function(success,data){
+                var me = {};
+                console.log(data);
+                if(success){
+                    me = data;
+                }
+                getTextTemplate("signup-template", function (source) {
+                    var template = Handlebars.compile(source);
+                    var info = template(me);
+                    $('#recipe-content').html(info);
+
+                    $("#btn-signup").click(function(button){
+                        var inputs = $("#signupform");
+                        var user={};
+                        inputs.serializeArray().forEach(function(input){
+                            user[input.name] = input.value;
+                        });
+                        console.log(user);
+                    });
+                });
+
             });
         });
 
