@@ -1,1 +1,5 @@
+.DS_Store
+.idea/
+fonts/.DS_Store
+nutritionLabel.js
 npm-debug.log
