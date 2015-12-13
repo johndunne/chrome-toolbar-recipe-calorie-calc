@@ -2,51 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 var current_recipe_url;
-var unqiue_user_id;
-//var recipe_api_url = "http://localhost:1243";
-//var recipe_api_url = "https://recipecalcalc.com/api";
-
-/*function load_recipe(recipe_url) {
-  console.log("Loading url: " + recipe_url);
-  current_recipe_url = recipe_url;
-  var url = recipe_api_url + '/plugin/parse_recipe';
-  var request = new XMLHttpRequest();
-  
-
-  request.onreadystatechange = function (e) {
-    console.log("Request response in");
-    if (request.readyState == 4) {
-      if (request.status == 200) {
-        console.log("Request response is ok");
-        document.getElementById("recipe_data").innerHTML = request.responseText;
-        $("#serving_size").change(function(e){
-          document.getElementById("calories_per_serving").innerHTML = parseFloat(parseFloat(document.getElementById("calories_in_recipe").textContent) / parseFloat(document.getElementById("serving_size").value)).toFixed(0);
-          document.getElementById("protein_per_serving").innerHTML = parseFloat(parseFloat(document.getElementById("protein_in_recipe").textContent) / parseFloat(document.getElementById("serving_size").value)).toFixed(0);
-          document.getElementById("carbs_per_serving").innerHTML = parseFloat(parseFloat(document.getElementById("carbs_in_recipe").textContent) / parseFloat(document.getElementById("serving_size").value)).toFixed(0);
-          document.getElementById("fat_per_serving").innerHTML = parseFloat(parseFloat(document.getElementById("fat_in_recipe").textContent) / parseFloat(document.getElementById("serving_size").value)).toFixed(0);
-          //formatNumbers();
-        });
-        formatNumbers();
-
-      } else if (request.status == 500) {
-        document.getElementById("recipe_data").innerHTML = request.responseText;
-      } else {
-        document.getElementById("recipe_data").innerHTML = "<h1>Recipe Calorie Calculator server unavailable.</h1>";
-      }
-    }
-  };
-  getRecipeRating(current_recipe_url);
-  var params = '["' + current_recipe_url + '"]';
-  request.open("POST", url, true);
-  request.setRequestHeader("UserID", chrome.extension.getBackgroundPage().uniqueUserID);
-  request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  request.setRequestHeader("Content-length", params.length);
-  request.setRequestHeader("Connection", "close");
-  console.log("Sending request to API");
-  request.send(params);
-}*/
-
-function formatNumbers(){
+/*function formatNumbers(){
     $( "*" ).each(function(index){ 
       if($(this).attr('nut') !== undefined ){ 
         $(this).text(parseFloat($(this).text()).toFixed($(this).attr('nut')) );
@@ -55,12 +11,11 @@ function formatNumbers(){
         $(this).click(function(e){$(this).text("Change!");});
       }
   } );
-
 }
+*/
 
 function _internalUpdateUIWithParsedIngredients(){
   var postData = $("#recipe_ingredients").val().split("\n");
-  //ga('set', 'parse/ingredients', 'len_' + postData.length);
   var options = {};
   if($("#recipe_portions").val()>0){
     options.portions = $("#recipe_portions").val();
@@ -79,14 +34,14 @@ function _internalUpdateUIWithParsedIngredients(){
           });
       }
   });
-
 }
+
 function map() {
     var recipe_url = chrome.extension.getBackgroundPage().selectedRecipe;
     var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
-    
-  initRecipeCalCalc("recipecalcalc.com/api", { user_id:user_id, scheme:"https",debug:true  });
-  //initRecipeCalCalc("localhost:1243", { user_id:user_id, scheme:"http",debug:true });
+    console.log("User_id" + user_id);
+  //initRecipeCalCalc("recipecalcalc.com/api", { user_id:user_id, scheme:"https",debug:true  });
+  initRecipeCalCalc("localhost:1243", { user_id:user_id, scheme:"http",debug:false });
 
   //var recipe_url = chrome.extension.getBackgroundPage().selectedRecipe;
   //console.log(chrome.extension.getBackgroundPage());
@@ -99,7 +54,51 @@ function map() {
       return out;
   } );
 
-    Zepto(function ($) {
+    $(function ($) {
+        var showLogin = function showLogin(){
+            $('#loginbox').hide();
+            $('#signupbox').show();
+        }
+        var showSignup = function showSignup(){
+            $('#loginbox').hide();
+            $('#signupbox').show();
+        }
+        var setupLoginUI = function setupLoginUI(){
+            $("#signupbox").hide();
+            $("#sign-up-here-button").click(
+                function(){
+                    $("#signupbox").show();
+                    $("#loginbox").hide();
+                }
+            );
+            //$("#sign-in-here-button").click(showLogin());
+            $("#btn-fbsignup").click(function(button) {
+                 var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
+                 chrome.tabs.create({url: "https://recipecalcalc.com/fbsignup.html?user=" + user_id });
+            });
+             $("#btn-fblogin").click(function(button) {
+                 var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
+                 chrome.tabs.create({url: "https://recipecalcalc.com/fbsignup.html?user=" + user_id });
+                //$("#recipe-content").html("<iframe src=\"https://recipecalcalc.com\" width=\"100%\" height=\"100%\" frameborder=\"0\">09</iframe>");
+             });
+             $("#btn-signup").click(function(button) {
+                 var inputs = $("#signupform");
+                 var user = {};
+                 inputs.serializeArray().forEach(function (input) {
+                     user[input.name] = input.value;
+                 });
+                 console.log(user);
+             });
+             $("#btn-login").click(function(button) {
+                 var inputs = $("#loginform");
+                 var user = {};
+                 inputs.serializeArray().forEach(function (input) {
+                     user[input.name] = input.value;
+                 });
+                 console.log(user);
+             });
+        }
+
         function showParseIngredients() {
             getTextTemplate("parse-ingredients-template", function (source) {
                 var template = Handlebars.compile(source);
@@ -207,15 +206,7 @@ function map() {
                     var template = Handlebars.compile(source);
                     var info = template(me);
                     $('#recipe-content').html(info);
-
-                    $("#btn-signup").click(function(button){
-                        var inputs = $("#signupform");
-                        var user={};
-                        inputs.serializeArray().forEach(function(input){
-                            user[input.name] = input.value;
-                        });
-                        console.log(user);
-                    });
+                    setupLoginUI();
                 });
 
             });
@@ -224,6 +215,7 @@ function map() {
         $("#load-my-recipes").click(function () {
             ShowMyRecipes();
         });
+
     });
 }
 
@@ -361,4 +353,6 @@ function favRecipe( ){
     request.setRequestHeader("Connection", "close");
     request.send(params);
 }
+
+
 window.onload = map;

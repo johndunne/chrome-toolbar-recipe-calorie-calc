@@ -11,6 +11,25 @@ var currentIngredientBoxContent = "";
 var currentRecipeName = "";
 var currentRecipePortions = 0;
 
+console.log("User id?");
+chrome.storage.sync.get('userid', function(items) {
+    console.log("User id = ");
+    console.log(items);
+    var userid = items.userid;
+    if (userid) {
+        useToken(userid);
+    } else {
+        userid = getRandomToken();
+        chrome.storage.sync.set({userid: userid}, function() {
+            console.log("Set!");
+            useToken(userid);
+        });
+    }
+    function useToken(userid) {
+        uniqueUserID = userid;
+    }
+});
+
 chrome.storage.sync.get('currentIngredientBoxContent', function(items) {
   currentIngredientBoxContent = items.currentIngredientBoxContent;
 });
@@ -91,7 +110,6 @@ function getRandomToken() {
     for (var i = 0; i < randomPool.length; ++i) {
         hex += randomPool[i].toString(16);
     }
-    // E.g. db18458e2782b2b77e36769c569e263a53885a9944dd0a861e5064eac16f1a
     return hex;
 }
 
@@ -109,4 +127,9 @@ chrome.tabs.onSelectionChanged.addListener(function(tabId, info) {
 // Ensure the current selected tab is set up.
 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
   updateRecipe(tabs[0].id);
+});
+
+chrome.extension.onRequest.addListener(function(request, sender) {
+    console.log("asd");
+    chrome.tabs.update(sender.tab.id, {url: request.redirect});
 });
