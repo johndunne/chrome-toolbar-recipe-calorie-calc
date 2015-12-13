@@ -1,3 +1,5 @@
+bower_components
+dist
 .DS_Store
 .idea/
 fonts/.DS_Store
