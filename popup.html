@@ -87,7 +87,7 @@
     {{description}}
     <table class="table table-striped table-bordered table-condensed">
         <tr><th>Ingredient</th><th>Calories</th><th>Amount</th><th>Fat</th><th>Sugar</th><th>Protein</th></tr>
-        {{#ingMap}}
+        {{#nutrition}}
           {{#if header}}
           <tr><td colspan="6"><strong>{{ingredient_line}}</strong></td></tr>
           {{else}}
@@ -99,14 +99,14 @@
             <td><span class="macro-nutrient-number" id="protein_for_{{seq}}">{{protein}}g</span></td>
           </tr>
           {{/if}}
-        {{/ingMap}}
-        {{#if perPortion}}
+        {{/nutrition}}
+        {{#if nutrition_per_porition}}
             <tr><td class="text-right">Per portion</td>
-                <td><span class="calorie-number" id="calories_per_portion">{{perPortion.calories}}</span></td>
-                <td><span class="macro-nutrient-number" id="amount_per_portion">{{perPortion.amount}}g</span></td>
-                <td><span class="macro-nutrient-number" id="total_fat_per_portion">{{perPortion.total_fat}}g</span></td>
-                <td><span class="macro-nutrient-number" id="total_sugar_per_portion">{{perPortion.total_sugar}}g</span></td>
-                <td><span class="macro-nutrient-number" id="protein_per_portion">{{perPortion.protein}}g</span></td>
+                <td><span class="calorie-number" id="calories_per_portion">{{nutrition_per_porition.calories}}</span></td>
+                <td><span class="macro-nutrient-number" id="amount_per_portion">{{nutrition_per_porition.amount}}g</span></td>
+                <td><span class="macro-nutrient-number" id="total_fat_per_portion">{{nutrition_per_porition.total_fat}}g</span></td>
+                <td><span class="macro-nutrient-number" id="total_sugar_per_portion">{{nutrition_per_porition.total_sugar}}g</span></td>
+                <td><span class="macro-nutrient-number" id="protein_per_portion">{{nutrition_per_porition.protein}}g</span></td>
             </tr></tr>
         {{/if}}
         <tr><td class="text-right">Total</td>
@@ -127,6 +127,7 @@
             <td><h4>Sugar<small>per portion</small></h4></td>
             <td><h4>Protein<small>per portion</small></h4></td>
         </tr>
+        {{#if recipes}}
         {{#recipes}}
         <tr><td><span><a clickable="true" recipe_id="{{recipe_id}}">{{name}}</a></span></td>
             <td><span class="calorie-number">{{nutrition_per_portion.calories}}</span></td>
@@ -135,6 +136,10 @@
             <td><span class="macro-nutrient-number">{{nutrition_per_portion.protein}}g</span></td>
           </tr>
         {{/recipes}}
+        {{else}}
+        <tr><td colspan="5"><div style="text-align: center;width: 100%;"><h4>No recipes found.</h4><small>You can add recipes from the ingredients section. Enter ingredients and hit <b>Save</b>.</small></div></td>
+        </tr>
+        {{/if}}
     </table>
 </script>
 

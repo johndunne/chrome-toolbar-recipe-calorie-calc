@@ -40,63 +40,63 @@ function map() {
     var recipe_url = chrome.extension.getBackgroundPage().selectedRecipe;
     var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
     console.log("User_id" + user_id);
-  //initRecipeCalCalc("recipecalcalc.com/api", { user_id:user_id, scheme:"https",debug:true  });
-  initRecipeCalCalc("localhost:1243", { user_id:user_id, scheme:"http",debug:false });
+    initRecipeCalCalc("recipecalcalc.com/api", {user_id: user_id, scheme: "https", debug: false});
+    //initRecipeCalCalc("localhost:1243", { user_id:user_id, scheme:"http",debug:false });
 
-  //var recipe_url = chrome.extension.getBackgroundPage().selectedRecipe;
-  //console.log(chrome.extension.getBackgroundPage());
-  //console.log("Want: " + recipe_url);
-  Handlebars.registerHelper( 'eachInMap', function ( map, block ) {
-      var out = '';
-      Object.keys( map ).map(function( key ) {
-          out += block.fn( {name: key, list: map[ key ]} );
-      });
-      return out;
-  } );
+    //var recipe_url = chrome.extension.getBackgroundPage().selectedRecipe;
+    //console.log(chrome.extension.getBackgroundPage());
+    //console.log("Want: " + recipe_url);
+    Handlebars.registerHelper('eachInMap', function (map, block) {
+        var out = '';
+        Object.keys(map).map(function (key) {
+            out += block.fn({name: key, list: map[key]});
+        });
+        return out;
+    });
 
     $(function ($) {
-        var showLogin = function showLogin(){
+        var showLogin = function showLogin() {
             $('#loginbox').hide();
             $('#signupbox').show();
         }
-        var showSignup = function showSignup(){
+        var showSignup = function showSignup() {
             $('#loginbox').hide();
             $('#signupbox').show();
         }
-        var setupLoginUI = function setupLoginUI(){
+        var setupLoginUI = function setupLoginUI() {
             $("#signupbox").hide();
             $("#sign-up-here-button").click(
-                function(){
+                function () {
                     $("#signupbox").show();
                     $("#loginbox").hide();
                 }
             );
             //$("#sign-in-here-button").click(showLogin());
-            $("#btn-fbsignup").click(function(button) {
-                 var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
-                 chrome.tabs.create({url: "https://recipecalcalc.com/fbsignup.html?user=" + user_id });
+            $("#btn-fbsignup").click(function (button) {
+                var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
+                chrome.tabs.create({url: "https://recipecalcalc.com/fbsignup.html?user=" + user_id});
             });
-             $("#btn-fblogin").click(function(button) {
-                 var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
-                 chrome.tabs.create({url: "https://recipecalcalc.com/fbsignup.html?user=" + user_id });
+            $("#btn-fblogin").click(function (button) {
+                var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
+                chrome.tabs.create({url: "https://recipecalcalc.com/fbsignup.html?user=" + user_id});
                 //$("#recipe-content").html("<iframe src=\"https://recipecalcalc.com\" width=\"100%\" height=\"100%\" frameborder=\"0\">09</iframe>");
-             });
-             $("#btn-signup").click(function(button) {
-                 var inputs = $("#signupform");
-                 var user = {};
-                 inputs.serializeArray().forEach(function (input) {
-                     user[input.name] = input.value;
-                 });
-                 console.log(user);
-             });
-             $("#btn-login").click(function(button) {
-                 var inputs = $("#loginform");
-                 var user = {};
-                 inputs.serializeArray().forEach(function (input) {
-                     user[input.name] = input.value;
-                 });
-                 console.log(user);
-             });
+            });
+            $("#btn-signup").click(function (button) {
+                var inputs = $("#signupform");
+                var user = {};
+                inputs.serializeArray().forEach(function (input) {
+                    user[input.name] = input.value;
+                });
+                console.log(user);
+            });
+            $("#btn-login").click(function (button) {
+                var inputs = $("#loginform");
+                var user = {};
+                inputs.serializeArray().forEach(function (input) {
+                    user[input.name] = input.value;
+                });
+                console.log(user);
+            });
         }
 
         function showParseIngredients() {
@@ -196,10 +196,10 @@ function map() {
         });
 
         $("#signup-button").click(function () {
-            GetObject("me",{},function(success,data){
+            GetObject("me", {}, function (success, data) {
                 var me = {};
                 console.log(data);
-                if(success){
+                if (success) {
                     me = data;
                 }
                 getTextTemplate("signup-template", function (source) {
