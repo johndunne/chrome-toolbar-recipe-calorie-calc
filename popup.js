@@ -44,15 +44,73 @@ function map() {
     //initRecipeCalCalc("localhost:1243", { user_id:user_id, scheme:"http",debug:false });
 
     //var recipe_url = chrome.extension.getBackgroundPage().selectedRecipe;
-    //console.log(chrome.extension.getBackgroundPage());
-    //console.log("Want: " + recipe_url);
-    Handlebars.registerHelper('eachInMap', function (map, block) {
-        var out = '';
-        Object.keys(map).map(function (key) {
-            out += block.fn({name: key, list: map[key]});
+    //console.log(chrome.extension.getBackgroundPage());c
+    console.log("Want: " + recipe_url);
+    if( typeof Handlebars  != "undefined" ) {
+        Handlebars.registerHelper('eachInMap', function (map, block) {
+            var out = '';
+            Object.keys(map).map(function (key) {
+                out += block.fn({name: key, list: map[key]});
+            });
+            return out;
         });
-        return out;
-    });
+        Handlebars.registerHelper('multiply', function (v1, v2) {
+            return (v1 * v2);
+        });
+        Handlebars.registerHelper('divide', function (v1, v2, places) {
+            if (!isNaN(places) && places > 0) {
+                return (v1 / v2).toFixed(places);
+            } else {
+                return (v1 / v2);
+            }
+        });
+        function contains(a, food_id) {
+            for (var i = 0; i < a.length; i++) {
+                if (a[i].nut_food_id == food_id) return true;
+            }
+            return false;
+        }
+        Handlebars.registerHelper('not', function (recipe_nutrition, block) {
+            var out = '';
+            recipe_nutrition.forEach(function (nutrition) {
+                if (!contains(parsedFoods, nutrition.food_id)) {
+                    out += block.fn({common_name: nutrition.common_name});
+                }
+            });
+            return out;
+        });
+        Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
+            switch (operator) {
+                case '==':
+                    return (v1 == v2) ? options.fn(this) : options.inverse(this);
+                case '===':
+                    return (v1 === v2) ? options.fn(this) : options.inverse(this);
+                case '<':
+                    return (v1 < v2) ? options.fn(this) : options.inverse(this);
+                case '<=':
+                    return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+                case '>':
+                    return (v1 > v2) ? options.fn(this) : options.inverse(this);
+                case '>=':
+                    return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+                case '&&':
+                    return (v1 && v2) ? options.fn(this) : options.inverse(this);
+                case '||':
+                    return (v1 || v2) ? options.fn(this) : options.inverse(this);
+                default:
+                    return options.inverse(this);
+            }
+        });
+        Handlebars.registerHelper('yes', function (recipe_nutrition, block) {
+            var out = "";
+            recipe_nutrition.forEach(function (nutrition) {
+                if (contains(parsedFoods, nutrition.food_id)) {
+                    out += block.fn({common_name: nutrition.common_name});
+                }
+            });
+            return out;
+        });
+    }
 
     $(function ($) {
         var showLogin = function showLogin() {
@@ -74,11 +132,11 @@ function map() {
             //$("#sign-in-here-button").click(showLogin());
             $("#btn-fbsignup").click(function (button) {
                 var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
-                chrome.tabs.create({url: "https://recipecalcalc.com/fbsignup.html?user=" + user_id});
+                chrome.tabs.create({url: "https://caloriemash.com/fbsignup.html?user=" + user_id});
             });
             $("#btn-fblogin").click(function (button) {
                 var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
-                chrome.tabs.create({url: "https://recipecalcalc.com/fbsignup.html?user=" + user_id});
+                chrome.tabs.create({url: "https://caloriemash.com/fbsignup.html?user=" + user_id});
                 //$("#recipe-content").html("<iframe src=\"https://recipecalcalc.com\" width=\"100%\" height=\"100%\" frameborder=\"0\">09</iframe>");
             });
             $("#btn-signup").click(function (button) {
