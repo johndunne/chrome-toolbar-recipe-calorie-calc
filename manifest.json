@@ -1,7 +1,7 @@
 {
-  "name": "Recipe Calorie Calculator (Toolbar))",
-  "version": "0.0.2",
-  "description": "Adds a text box to copy and paste your recipe ingredients.",
+  "name": "CalorieMash recipe nutrition calc",
+  "version": "0.0.3",
+  "description": "A fantastic text box to copy and paste your recipe ingredients into, and see the nutritional breakdown of all of the ingredients.",
   "icons": { "128": "images/icon.png" },
   "background": { "scripts": ["background.js"] },
   "content_scripts": [
@@ -12,11 +12,10 @@
     "tabs",
     "https://recipecalcalc.com/*",
     "https://api.recipecalcalc.com/*",
-    "http://fonts.googleapis.com/css?family=Archivo+Black",
     "http://localhost:1243/*"
   ],
   "browser_action": {
-      "default_name": "Display Map",
+      "default_name": "Calc ingredients nutrition",
       "default_icon": "images/marker.png",
       "default_popup": "popup.html"
   },

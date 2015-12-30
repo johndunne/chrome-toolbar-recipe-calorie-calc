@@ -196,11 +196,9 @@ function map() {
                     _internalUpdateUIWithParsedIngredients();
                 });
                 $("#recipe_portions").keyup(function (e) {
-                    console.log("About to: saveRecipePortionsContent");
                     chrome.extension.getBackgroundPage().saveIngredientsContent($("#recipe_ingredients").val());
                     chrome.extension.getBackgroundPage().saveRecipePortionsContent($("#recipe_portions").val());
                     chrome.extension.getBackgroundPage().saveRecipeNameContent($("#recipe_name").val());
-                    console.log("Did : saveRecipePortionsContent");
                     var options = {};
                     if ($("#recipe_portions").val() > 0) {
                         options.portions = $("#recipe_portions").val();
@@ -209,6 +207,7 @@ function map() {
                     // Refresh ingredient's results in the locally parsed recipe object being updarted with the new porttions value,
                     // and the local HTML page refreshing with the new values.
                     refreshIngredients(options, function (recipe, error) {
+                        console.error(recipe);
                         if (error) {
                             ShowGeneralError(error);
                         } else {

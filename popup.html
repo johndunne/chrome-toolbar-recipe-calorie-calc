@@ -100,16 +100,17 @@
           </tr>
           {{/if}}
         {{/nutrition}}
-        {{#if nutrition_per_porition}}
+        {{#if nutrition_per_portion}}
             <tr><td class="text-right">Per portion</td>
-                <td><span class="calorie-number" id="calories_per_portion">{{nutrition_per_porition.calories}}</span></td>
-                <td><span class="macro-nutrient-number" id="amount_per_portion">{{nutrition_per_porition.amount}}g</span></td>
-                <td><span class="macro-nutrient-number" id="total_fat_per_portion">{{nutrition_per_porition.total_fat}}g</span></td>
-                <td><span class="macro-nutrient-number" id="total_sugar_per_portion">{{nutrition_per_porition.total_sugar}}g</span></td>
-                <td><span class="macro-nutrient-number" id="protein_per_portion">{{nutrition_per_porition.protein}}g</span></td>
-            </tr></tr>
+                <td><span class="calorie-number" id="calories_per_portion">{{nutrition_per_portion.calories}}</span></td>
+                <td><span class="macro-nutrient-number" id="amount_per_portion">{{nutrition_per_portion.amount}}g</span></td>
+                <td><span class="macro-nutrient-number" id="total_fat_per_portion">{{nutrition_per_portion.total_fat}}g</span></td>
+                <td><span class="macro-nutrient-number" id="total_sugar_per_portion">{{nutrition_per_portion.total_sugar}}g</span></td>
+                <td><span class="macro-nutrient-number" id="protein_per_portion">{{nutrition_per_portion.protein}}g</span></td>
+            </tr>
         {{/if}}
-        <tr><td class="text-right">Total</td>
+        <tr>
+            <td class="text-right">Total</td>
             <td><span class="calorie-number" id="calories_total">{{multiply nutrition_per_portion.calories nutrition_per_portion.portions}}</span></td>
             <td><span class="macro-nutrient-number" id="amount_total">{{multiply nutrition_per_portion.amount nutrition_per_portion.portions}}g</span></td>
             <td><span class="macro-nutrient-number" id="total_fat_total">{{multiply nutrition_per_portion.total_fat nutrition_per_portion.portions}}g</span></td>
@@ -481,12 +482,6 @@
                             <label for="password" class="col-md-3 control-label">Password</label>
                             <div class="col-md-9">
                                 <input type="password" class="form-control" name="password" id="password" placeholder="Password">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="icode" class="col-md-3 control-label">Invitation Code</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="icode" id="icode" placeholder="">
                             </div>
                         </div>
                         <div class="form-group">
