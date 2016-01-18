@@ -129,15 +129,13 @@ function map() {
                     $("#loginbox").hide();
                 }
             );
-            //$("#sign-in-here-button").click(showLogin());
             $("#btn-fbsignup").click(function (button) {
                 var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
-                chrome.tabs.create({url: "https://caloriemash.com/fbsignup.html?user=" + user_id});
+                chrome.tabs.create({url: "https://caloriemash.com/signup.html?user=" + user_id});
             });
             $("#btn-fblogin").click(function (button) {
                 var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
-                chrome.tabs.create({url: "https://caloriemash.com/fbsignup.html?user=" + user_id});
-                //$("#recipe-content").html("<iframe src=\"https://recipecalcalc.com\" width=\"100%\" height=\"100%\" frameborder=\"0\">09</iframe>");
+                chrome.tabs.create({url: "https://caloriemash.com/signin.html?user=" + user_id});
             });
             $("#btn-signup").click(function (button) {
                 var inputs = $("#signupform");
@@ -145,7 +143,6 @@ function map() {
                 inputs.serializeArray().forEach(function (input) {
                     user[input.name] = input.value;
                 });
-                console.log(user);
             });
             $("#btn-login").click(function (button) {
                 var inputs = $("#loginform");
@@ -153,7 +150,6 @@ function map() {
                 inputs.serializeArray().forEach(function (input) {
                     user[input.name] = input.value;
                 });
-                console.log(user);
             });
         }
 
@@ -300,6 +296,10 @@ function FetchRecipeSuperObject(recipe_id){
                 var info = template(recipe);
                 $('#recipe-content').html(info);
                 $('#nutrition-label').nutritionLabel( recipe );
+                $('#make-changes-button').click(function(e){
+                    var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
+                    chrome.tabs.create({url: "https://caloriemash.com/my-recipe.html?recipe_id=" + recipe_id});
+                });
                 vitaminChangeNames();
             });
             $('#recipe_error_message').text("");
