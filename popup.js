@@ -37,15 +37,37 @@ function _internalUpdateUIWithParsedIngredients(){
 }
 
 function map() {
-    var recipe_url = chrome.extension.getBackgroundPage().selectedRecipe;
+    var initaliser = {scheme: "https", debug: false};
     var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
-    console.log("User_id" + user_id);
-    initRecipeCalCalc("recipecalcalc.com/api", {user_id: user_id, scheme: "https", debug: false});
-    //initRecipeCalCalc("localhost:1243", { user_id:user_id, scheme:"http",debug:false });
+    var api_key = chrome.extension.getBackgroundPage().apiKey;
+    console.log("User = " + user_id);
+    console.log("Api  = " + api_key);
+    if(!user_id){
+        var api_key = chrome.extension.getBackgroundPage().apiKey;
+        console.log("Api key" + api_key);
+        if(!api_key){
+            console.error("No api key");
+        }else{
+            initaliser.api_key = api_key
+        }
+    }else{
+        initaliser.user_id = user_id
+    }
+    initRecipeCalCalc("recipecalcalc.com/api", initaliser);
 
-    //var recipe_url = chrome.extension.getBackgroundPage().selectedRecipe;
-    //console.log(chrome.extension.getBackgroundPage());c
-    console.log("Want: " + recipe_url);
+    attachNoLongValidGuestIDHook(function(){console.log("Signing out");chrome.extension.getBackgroundPage().signout();});
+
+    if(!user_id&&!api_key){
+        RequestGuestKey("caloremash-chrome",{}, function (success,data) {
+            console.log(data);
+            if(success){
+                chrome.extension.getBackgroundPage().saveGuestID(data);
+            }else{
+                console.error("No inernet!")
+            }
+        })
+    }
+
     if( typeof Handlebars  != "undefined" ) {
         Handlebars.registerHelper('eachInMap', function (map, block) {
             var out = '';
@@ -113,46 +135,6 @@ function map() {
     }
 
     $(function ($) {
-        var showLogin = function showLogin() {
-            $('#loginbox').hide();
-            $('#signupbox').show();
-        }
-        var showSignup = function showSignup() {
-            $('#loginbox').hide();
-            $('#signupbox').show();
-        }
-        var setupLoginUI = function setupLoginUI() {
-            $("#signupbox").hide();
-            $("#sign-up-here-button").click(
-                function () {
-                    $("#signupbox").show();
-                    $("#loginbox").hide();
-                }
-            );
-            $("#btn-fbsignup").click(function (button) {
-                var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
-                chrome.tabs.create({url: "https://caloriemash.com/signup.html?user=" + user_id});
-            });
-            $("#btn-fblogin").click(function (button) {
-                var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
-                chrome.tabs.create({url: "https://caloriemash.com/signin.html?user=" + user_id});
-            });
-            $("#btn-signup").click(function (button) {
-                var inputs = $("#signupform");
-                var user = {};
-                inputs.serializeArray().forEach(function (input) {
-                    user[input.name] = input.value;
-                });
-            });
-            $("#btn-login").click(function (button) {
-                var inputs = $("#loginform");
-                var user = {};
-                inputs.serializeArray().forEach(function (input) {
-                    user[input.name] = input.value;
-                });
-            });
-        }
-
         function showParseIngredients() {
             getTextTemplate("parse-ingredients-template", function (source) {
                 var template = Handlebars.compile(source);
@@ -247,24 +229,7 @@ function map() {
                 $('#recipe-content').html(info);
             });
         });
-
-        $("#signup-button").click(function () {
-            GetObject("me", {}, function (success, data) {
-                var me = {};
-                console.log(data);
-                if (success) {
-                    me = data;
-                }
-                getTextTemplate("signup-template", function (source) {
-                    var template = Handlebars.compile(source);
-                    var info = template(me);
-                    $('#recipe-content').html(info);
-                    setupLoginUI();
-                });
-
-            });
-        });
-
+        $("#signup-button").click(performMyAccountAction);
         $("#load-my-recipes").click(function () {
             ShowMyRecipes();
         });
@@ -297,8 +262,23 @@ function FetchRecipeSuperObject(recipe_id){
                 $('#recipe-content').html(info);
                 $('#nutrition-label').nutritionLabel( recipe );
                 $('#make-changes-button').click(function(e){
-                    var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
                     chrome.tabs.create({url: "https://caloriemash.com/my-recipe.html?recipe_id=" + recipe_id});
+                });
+                $('#export-html').click(function(){
+                   var url = "https://caloriemash.com/recipe/" + recipe_id + "/nutrition-label/html";
+                    chrome.tabs.create({url: url});
+                });
+                $('#export-csv').click(function(){
+                    var url = "https://caloriemash.com/recipe/" + recipe_id + "/csv";
+                    chrome.tabs.create({url: url});
+                });
+                $('#export-png').click(function(){
+                    var url = "https://caloriemash.com/recipe/" + recipe_id + "/nutrition-label/png";
+                    chrome.tabs.create({url: url});
+                });
+                $('#export-pdf').click(function(){
+                    var url = "https://caloriemash.com/recipe/" + recipe_id + "/nutrition-label/pdf";
+                    chrome.tabs.create({url: url});
                 });
                 vitaminChangeNames();
             });
@@ -409,6 +389,96 @@ function favRecipe( ){
     request.setRequestHeader("Content-length", params.length);
     request.setRequestHeader("Connection", "close");
     request.send(params);
+}
+
+var performMyAccountAction = function () {
+    var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
+    var api_key = chrome.extension.getBackgroundPage().apiKey;
+    if(user_id){
+        getTextTemplate("signup-template", function (source) {
+            var template = Handlebars.compile(source);
+            var info = template({});
+            $('#recipe-content').html(info);
+            setupLoginUI();
+        });
+    }else {
+        GetObject("me", {}, function (success, data) {
+            var me = {};
+            console.log(data);
+            if (success) {
+                me = data;
+                getTextTemplate("recipe-my-account", function (source) {
+                    var template = Handlebars.compile(source);
+                    var info = template(me);
+                    $('#recipe-content').html(info);
+                    setupLoginUI();
+                });
+                var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
+                if (user_id) {
+                    RequestApiKey({}, function (success, api_key) {
+                        console.error(api_key);
+                        chrome.extension.getBackgroundPage().saveApiKey(api_key);
+                    });
+                    TakeGuestRecipes(user_id, {}, function (success, data) {
+                        console.error(data);
+                        chrome.extension.getBackgroundPage().uniqueUserID = null;
+                    });
+                }
+            } else {
+                getTextTemplate("signup-template", function (source) {
+                    var template = Handlebars.compile(source);
+                    var info = template(me);
+                    $('#recipe-content').html(info);
+                    setupLoginUI();
+                });
+            }
+        });
+    }
+}
+var showLogin = function showLogin() {
+    $('#loginbox').hide();
+    $('#signupbox').show();
+}
+var showSignup = function showSignup() {
+    $('#loginbox').hide();
+    $('#signupbox').show();
+}
+var setupLoginUI = function setupLoginUI() {
+    $("#signupbox").hide();
+    $("#sign-up-here-button").click(
+        function () {
+            $("#signupbox").show();
+            $("#loginbox").hide();
+        }
+    );
+    $("#btn-signout").click(function (button) {
+        chrome.extension.getBackgroundPage().signout();
+        SignOut({},function(success,data){
+            performMyAccountAction();
+        });
+    });
+    $("#btn-fbsignup").click(function (button) {
+        var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
+        chrome.tabs.create({url: "https://caloriemash.com/signup.html?user=" + user_id});
+    });
+    $("#btn-fblogin").click(function (button) {
+        var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
+        chrome.tabs.create({url: "https://caloriemash.com/signin.html?user=" + user_id});
+    });
+    $("#btn-signup").click(function (button) {
+        var inputs = $("#signupform");
+        var user = {};
+        inputs.serializeArray().forEach(function (input) {
+            user[input.name] = input.value;
+        });
+    });
+    $("#btn-login").click(function (button) {
+        var inputs = $("#loginform");
+        var user = {};
+        inputs.serializeArray().forEach(function (input) {
+            user[input.name] = input.value;
+        });
+    });
 }
 
 

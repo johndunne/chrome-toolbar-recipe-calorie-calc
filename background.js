@@ -7,26 +7,26 @@ var addresses = {};
 var selectedRecipe = null;
 var selectedId = null;
 var uniqueUserID = null;
+var apiKey = null;
 var currentIngredientBoxContent = "";
 var currentRecipeName = "";
 var currentRecipePortions = 0;
+var application_name = "chrome-toolbar";
+//chrome.storage.sync.remove('userid',function(i){console.error(i)});
 
-console.log("User id?");
 chrome.storage.sync.get('userid', function(items) {
-    console.log("User id = ");
-    console.log(items);
     var userid = items.userid;
     if (userid) {
         useToken(userid);
-    } else {
-        userid = getRandomToken();
-        chrome.storage.sync.set({userid: userid}, function() {
-            console.log("Set!");
-            useToken(userid);
-        });
     }
-    function useToken(userid) {
-        uniqueUserID = userid;
+});
+function useToken(userid) {
+    uniqueUserID = userid;
+}
+chrome.storage.sync.get('apikey', function(items) {
+    var api_key = items.apikey;
+    if (api_key) {
+        apiKey = api_key;
     }
 });
 
@@ -41,7 +41,34 @@ chrome.storage.sync.get('currentRecipePortions', function(items) {
 });
 
 //chrome.browserAction.setBadgeText({text: "yeah"});
+var saveGuestID= function(guest_id){
+    chrome.storage.sync.set({userid: guest_id}, function() {
+        uniqueUserID=guest_id;
+        apiKey = null;
+    });
+};
+var signout= function(){
+    chrome.storage.sync.remove("userid", function() {
+    });
+    chrome.storage.sync.remove("apikey", function() {
+    });
+};
 
+var saveApiKey = function(api_key){
+    chrome.storage.sync.set({apikey: api_key}, function() {
+        uniqueUserID=null;
+        apiKey = api_key;
+    });
+};
+
+function saveApiKey(api_key) {
+    chrome.storage.sync.set({apikey: api_key}, function () {
+        console.log("Set!");
+        console.log(api_key);
+        apiKey = api_key;
+    });
+
+}
 function updateRecipe(tabId) {
   chrome.tabs.sendRequest(tabId, {}, function(recipe_url) {
     if(recipe_url){

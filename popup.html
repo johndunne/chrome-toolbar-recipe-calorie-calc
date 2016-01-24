@@ -168,6 +168,10 @@
         <div class="col-md-12" style="padding:6px">
             <div id="ingredient-nutritional-breakdown-buttons" class="btn-group" role="group" aria-label="...">
                 <button id="make-changes-button" type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit the ingredients.">Edit on CalorieMash.com</button>
+                <button id='export-html' type='button' class='btn btn-default'>html</button>
+                <button id='export-csv' type='button' class='btn btn-default'>CSV</button>
+                <button id='export-png' type='button' class='btn btn-default'>PNG</button>
+                <button id='export-pdf' type='button' class='btn btn-default'>PDF</button>
             </div>
         </div>
     </div>
@@ -376,10 +380,58 @@
 </script>
 
 
+<script type="text/template" id="recipe-my-account">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2" style="padding-top:15px">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{first_name}} {{last_name}}</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3 col-lg-3 " align="center">{{#if facebook_id}}<img alt="User Pic" src="https://graph.facebook.com/v2.5/{{facebook_id}}/picture" class="img-circle img-responsive">{{/if}}</div>
+                        <div class=" col-md-9 col-lg-9 ">
+                            <table class="table table-user-information">
+                                <tbody>
+                                <tr>
+                                    <td>Plan</td>
+                                    <td>{{plan_name}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Email:</td>
+                                    <td>{{email}}</td>
+                                </tr>
+                                <tr>
+                                    <td># recipes</td>
+                                    <td>{{num_recipes}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Allowed max</td>
+                                    <td>{{max_recipes}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <!--a data-original-title="Broadcast Message" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-envelope"></i></a-->
+                        <span class="">
+                            <a data-original-title="Remove this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
+                            <a id='btn-signout' data-original-title="Remove this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-danger">Sign out</a>
+                        </span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+</script>
+
 
 <script id="signup-template" type="text/template" charset="utf-8">
     <div class="container">
-        {{#if me}}
+        {{#if email}}
         Me!
         {{else}}
         <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
@@ -388,22 +440,17 @@
                     <div class="panel-title">Sign In</div>
                     <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Forgot password?</a></div>
                 </div>
-
                 <div style="padding-top:30px" class="panel-body">
-
                     <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-
                     <form id="loginform" class="form-horizontal" role="form">
                         <div style="margin-bottom: 25px" class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                             <input id="login-username" type="text" class="form-control" name="username" value="" placeholder="username or email">
                         </div>
-
                         <div style="margin-bottom: 25px" class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                             <input id="login-password" type="password" class="form-control" name="password" placeholder="password">
                         </div>
-
                         <div class="input-group">
                             <div class="checkbox">
                                 <label>
@@ -411,17 +458,13 @@
                                 </label>
                             </div>
                         </div>
-
                         <div style="margin-top:10px" class="form-group">
-                            <!-- Button -->
-
                             <div class="col-sm-12 controls">
                                 <a id="btn-login" href="#" class="btn btn-success">Login  </a>
                                 <a id="btn-fblogin" href="#" class="btn btn-primary">Login with Facebook</a>
 
                             </div>
                         </div>
-
                         <div class="form-group">
                             <div class="col-md-12 control">
                                 <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%">
