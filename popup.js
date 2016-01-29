@@ -404,7 +404,6 @@ var performMyAccountAction = function () {
     }else {
         GetObject("me", {}, function (success, data) {
             var me = {};
-            console.log(data);
             if (success) {
                 me = data;
                 getTextTemplate("recipe-my-account", function (source) {

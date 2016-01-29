@@ -23,11 +23,45 @@ chrome.storage.sync.get('userid', function(items) {
 function useToken(userid) {
     uniqueUserID = userid;
 }
+
 chrome.storage.sync.get('apikey', function(items) {
     var api_key = items.apikey;
     if (api_key) {
         apiKey = api_key;
     }
+});
+
+ // The code below is sample code for enabling right click features in a plugin
+// See: https://developer.chrome.com/extensions/contextMenus#type-ContextType
+searchUrbanDict = function(word){
+    chrome.tabs.sendMessage(selectedId, {method: "getSelection"},
+        function(response){
+            var query = response.data;
+            postData("https://caloriemash.com/ingredient-calories.html", {"ingredients": query});
+        });
+};
+
+function postData(url, data) {
+    chrome.tabs.create(
+        { url: chrome.runtime.getURL("post.html") },
+        function(tab) {
+            var handler = function(tabId, changeInfo) {
+                if(tabId === tab.id && changeInfo.status === "complete"){
+                    chrome.tabs.onUpdated.removeListener(handler);
+                    chrome.tabs.sendMessage(tabId, {url: url, data: data});
+                }
+            };
+            // in case we're faster than page load (usually):
+            chrome.tabs.onUpdated.addListener(handler);
+            // just in case we're too late with the listener:
+            chrome.tabs.sendMessage(tab.id, {url: url, data: data});
+        }
+    );
+}
+chrome.contextMenus.create({
+    title: "Parse ingredients (new tab)",
+    contexts:["selection"],  // ContextType
+    onclick: searchUrbanDict // A callback function
 });
 
 chrome.storage.sync.get('currentIngredientBoxContent', function(items) {

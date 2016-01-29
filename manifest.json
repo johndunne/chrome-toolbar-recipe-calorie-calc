@@ -8,6 +8,7 @@
     { "matches": ["http://*/*"], "js": ["mappy_content_script.js"] }
   ],
   "permissions": [
+    "contextMenus",
     "storage",
     "tabs",
     "https://recipecalcalc.com/*",
