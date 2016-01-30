@@ -33,11 +33,12 @@ chrome.storage.sync.get('apikey', function(items) {
 
  // The code below is sample code for enabling right click features in a plugin
 // See: https://developer.chrome.com/extensions/contextMenus#type-ContextType
-searchUrbanDict = function(word){
+parseCalorieMash = function(word){
     chrome.tabs.sendMessage(selectedId, {method: "getSelection"},
         function(response){
             var query = response.data;
-            postData("https://caloriemash.com/ingredient-calories.html", {"ingredients": query});
+            var recipe_url = response.recipe_url; // The recipe_url can help provide recipe name, and
+            postData("https://caloriemash.com/ingredient-calories.html", {"ingredients": query,"recipe_url":recipe_url});
         });
 };
 
@@ -61,7 +62,7 @@ function postData(url, data) {
 chrome.contextMenus.create({
     title: "Parse ingredients (new tab)",
     contexts:["selection"],  // ContextType
-    onclick: searchUrbanDict // A callback function
+    onclick: parseCalorieMash // A callback function
 });
 
 chrome.storage.sync.get('currentIngredientBoxContent', function(items) {

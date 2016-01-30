@@ -24,11 +24,12 @@ if (window == top) {
     }
   });
 }
+
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.method == "getSelection")
-        sendResponse({data: window.getSelection().toString()});
+        sendResponse({data: window.getSelection().toString(),recipe_url:document.URL});
     else
-        sendResponse({}); // snub them.
+        sendResponse({}); // Not interested
 });
 
 function getRandomToken() {

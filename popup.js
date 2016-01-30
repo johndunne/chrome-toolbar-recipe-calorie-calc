@@ -434,6 +434,7 @@ var performMyAccountAction = function () {
         });
     }
 }
+
 var showLogin = function showLogin() {
     $('#loginbox').hide();
     $('#signupbox').show();

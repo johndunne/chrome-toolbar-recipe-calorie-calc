@@ -6,6 +6,10 @@ var onMessageHandler = function(message){
     chrome.runtime.onMessage.removeListener(onMessageHandler);
 
     // code from http://stackoverflow.com/a/7404033/934239
+    if(message.data["recipe_url"] ) {
+        var recipe_url = document.getElementById("recipe_url");
+        recipe_url.innerHTML = message.data["recipe_url"];
+    }
     var pre = document.getElementById("ingredients")
     pre.innerHTML = "<pre>" + message.data["ingredients"] + "</pre>";
 
