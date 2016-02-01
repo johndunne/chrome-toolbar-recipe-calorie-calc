@@ -6,43 +6,16 @@
 var addresses = {};
 var selectedRecipe = null;
 var selectedId = null;
-var uniqueUserID = null;
-var apiKey = null;
 var currentIngredientBoxContent = "";
 var currentRecipeName = "";
 var currentRecipePortions = 0;
-var application_name = "chrome-toolbar";
-//chrome.storage.sync.remove('userid',function(i){console.error(i)});
 
-if(chrome.storage.sync) {
-    chrome.storage.sync.get('userid', function (items) {
-        var userid = items.userid;
-        if (userid) {
-            useToken(userid);
-        }
-    });
-
-    chrome.storage.sync.get('apikey', function (items) {
-        var api_key = items.apikey;
-        if (api_key) {
-            apiKey = api_key;
-        }
-    });
-}
-
-function useToken(userid) {
-    uniqueUserID = userid;
-}
  // The code below is sample code for enabling right click features in a plugin
 // See: https://developer.chrome.com/extensions/contextMenus#type-ContextType
 parseCalorieMash = function(word){
-    //chrome.tabs.sendMessage(selectedId, {method: "getSelection"},
     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-        console.log(tabs[0].id);
-        console.log(tabs[0]);
         chrome.tabs.sendMessage(tabs[0].id, {method: "getSelection"},
             function (response) {
-                console.log(response);
                 var query = response.data;
                 var recipe_url = response.recipe_url; // The recipe_url can help provide recipe name, and
                 postData("https://caloriemash.com/ingredient-calories.html", {
@@ -56,7 +29,6 @@ parseCalorieMash = function(word){
 var latestIngredientsParsingData = false;
 
 var onIngreidentsParseMessageHandler = function(sender,request,sendResponse){
-    console.log(sender);
     sendResponse(latestIngredientsParsingData);
 }
 chrome.runtime.onMessage.addListener(onIngreidentsParseMessageHandler);
@@ -77,7 +49,7 @@ function postData(url, data) {
             // in case we're faster than page load (usually):
             chrome.tabs.onUpdated.addListener(handler);
             // just in case we're too late with the listener:
-            //chrome.tabs.sendMessage(tab.id, {url: url, data: data, method:"postForm"});
+            chrome.tabs.sendMessage(tab.id, {url: url, data: data});
         }
     );
 }
@@ -88,46 +60,25 @@ chrome.contextMenus.create({
     onclick: parseCalorieMash // A callback function
 });
 
-if(chrome.storage.sync) {
-    chrome.storage.sync.get('currentIngredientBoxContent', function (items) {
+if(chrome.storage.local) {
+    chrome.storage.local.get('currentIngredientBoxContent', function (items) {
         currentIngredientBoxContent = items.currentIngredientBoxContent;
     });
-    chrome.storage.sync.get('currentRecipeName', function (items) {
+    chrome.storage.local.get('currentRecipeName', function (items) {
         currentRecipeName = items.currentRecipeName;
     });
-    chrome.storage.sync.get('currentRecipePortions', function (items) {
+    chrome.storage.local.get('currentRecipePortions', function (items) {
         currentRecipePortions = items.currentRecipePortions;
     });
+}else{ // Must be firefox
+    var ss = require("sdk/simple-storage");
+    console.log(ss);
+    currentRecipePortions = ss.storage.currentRecipePortions;
+    currentIngredientBoxContent = ss.storage.currentIngredientBoxContent;
+    currentRecipeName = ss.storage.currentRecipeName;
+
 }
 //chrome.browserAction.setBadgeText({text: "yeah"});
-var saveGuestID= function(guest_id){
-    chrome.storage.sync.set({userid: guest_id}, function() {
-        uniqueUserID=guest_id;
-        apiKey = null;
-    });
-};
-var signout= function(){
-    chrome.storage.sync.remove("userid", function() {
-    });
-    chrome.storage.sync.remove("apikey", function() {
-    });
-};
-
-var saveApiKey = function(api_key){
-    chrome.storage.sync.set({apikey: api_key}, function() {
-        uniqueUserID=null;
-        apiKey = api_key;
-    });
-};
-
-function saveApiKey(api_key) {
-    chrome.storage.sync.set({apikey: api_key}, function () {
-        console.log("Set!");
-        console.log(api_key);
-        apiKey = api_key;
-    });
-
-}
 function updateRecipe(tabId) {
   chrome.tabs.sendRequest(tabId, {}, function(recipe_url) {
       if (recipe_url) {
@@ -146,46 +97,44 @@ function updateRecipe(tabId) {
 }
 
 function updateSelected(tabId) {
-  selectedRecipe = addresses[tabId];
-  if (selectedRecipe){
-    chrome.storage.sync.get('userid', function(items) {
-      var userid = items.userid;
-      if (userid) {
-        useToken(userid);
-      } else {
-        userid = getRandomToken();
-        chrome.storage.sync.set({userid: userid}, function() {
-            useToken(userid);
-        });
-      }
-      function useToken(userid) {
-        uniqueUserID = userid;
-      }
-    });
+    selectedRecipe = addresses[tabId];
     chrome.pageAction.setTitle({tabId:tabId, title:selectedRecipe});
-  }
 }
 
 function saveRecipeNameContent( content ){
     currentRecipeName = content;
-    chrome.storage.sync.set({currentRecipeName: content}, function() {
-      console.log("Saved");
-    });
+    if(chrome.storage.local) {
+        chrome.storage.local.set({currentRecipeName: content}, function () {
+            console.log("Saved");
+        });
+    }else{//Must be firefox
+        var ss = require("sdk/simple-storage");
+        ss.storage.currentRecipeName=content;
+    }
 }
 
 function saveRecipePortionsContent( content ){
     currentRecipePortions = content;
-      console.log(content);
-    chrome.storage.sync.set({currentRecipePortions: content}, function() {
-      console.log("Saved");
-    });
+    if(chrome.storage.local) {
+        chrome.storage.local.set({currentRecipePortions: content}, function () {
+            console.log("Saved");
+        });
+    }else{//Must be firefox
+        var ss = require("sdk/simple-storage");
+        ss.storage.currentRecipePortions=content;
+    }
 }
 
 function saveIngredientsContent( content ){
     currentIngredientBoxContent = content;
-    chrome.storage.sync.set({currentIngredientBoxContent: content}, function() {
-      console.log("Saved");
-    });
+    if(chrome.storage.local) {
+        chrome.storage.local.set({currentIngredientBoxContent: content}, function () {
+            console.log("Saved");
+        });
+    }else{//Must be firefox
+        var ss = require("sdk/simple-storage");
+        ss.storage.currentIngredientBoxContent=content;
+    }
 }
 
 function getRandomToken() {
@@ -204,7 +153,6 @@ if(chrome.tabs.onSelectionChanged) {
             updateRecipe(tabId);
         }
     });
-
     chrome.tabs.onSelectionChanged.addListener(function (tabId, info) {
         selectedId = tabId;
         updateSelected(tabId);
@@ -218,7 +166,6 @@ if(chrome.tabs.onSelectionChanged) {
 
 if(chrome.extension.onRequest) {
     chrome.extension.onRequest.addListener(function (request, sender) {
-        console.log("asd");
         chrome.tabs.update(sender.tab.id, {url: request.redirect});
     });
 }

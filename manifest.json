@@ -7,11 +7,6 @@
   "content_scripts": [
     { "matches": ["http://*/*"], "js": ["mappy_content_script.js"] }
   ],
-  "applications": {
-    "gecko": {
-      "id": "john@caloriemash.com"
-    }
-  },
   "permissions": [
     "contextMenus",
     "storage",

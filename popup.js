@@ -37,22 +37,7 @@ function _internalUpdateUIWithParsedIngredients(){
 }
 
 function map() {
-    var initaliser = {scheme: "https", debug: false};
-    var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
-    var api_key = chrome.extension.getBackgroundPage().apiKey;
-    console.log("User = " + user_id);
-    console.log("Api  = " + api_key);
-    if(!user_id){
-        var api_key = chrome.extension.getBackgroundPage().apiKey;
-        console.log("Api key" + api_key);
-        if(!api_key){
-            console.error("No api key");
-        }else{
-            initaliser.api_key = api_key
-        }
-    }else{
-        initaliser.user_id = user_id
-    }
+    var initaliser = {scheme: "https", debug: false,enable_persistent_visitor:true,application_name:"CalorieMash chrome ext"};
     initRecipeCalCalc("recipecalcalc.com/api", initaliser);
 
     attachNoLongValidGuestIDHook(function(){console.log("Signing out");chrome.extension.getBackgroundPage().signout();});
@@ -326,7 +311,6 @@ function rateRecipe( rating ){
           console.log("ratRecipe: " + request.responseText);
         }
     }
-    console.log("Unique ID[" + chrome.extension.getBackgroundPage().uniqueUserID + "]");
 
     var url = recipe_api_url + "/rate-recipe";
     var params = '{"recipe_url" : "' + current_recipe_url + '", "rating" : ' + rating + '}';
@@ -392,8 +376,8 @@ function favRecipe( ){
 }
 
 var performMyAccountAction = function () {
-    var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
-    var api_key = chrome.extension.getBackgroundPage().apiKey;
+    var user_id = getRecipeCalCalLocalUserId();
+    var api_key = getRecipeCalCalLocalApikey();
     if(user_id){
         getTextTemplate("signup-template", function (source) {
             var template = Handlebars.compile(source);
@@ -412,7 +396,6 @@ var performMyAccountAction = function () {
                     $('#recipe-content').html(info);
                     setupLoginUI();
                 });
-                var user_id = chrome.extension.getBackgroundPage().uniqueUserID;
                 if (user_id) {
                     RequestApiKey({}, function (success, api_key) {
                         console.error(api_key);

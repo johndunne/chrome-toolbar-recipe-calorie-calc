@@ -30,7 +30,7 @@ var onMessageHandler = function(sender,request,sendResponse){
             form.appendChild(hiddenField);
         }
         document.body.appendChild(form);
-        //form.submit();
+        form.submit();
     }
     return true;
 }
