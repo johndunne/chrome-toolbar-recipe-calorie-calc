@@ -1,6 +1,6 @@
 {
   "name": "CalorieMash recipe nutrition calc",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A fantastic text box to copy and paste your recipe ingredients into, and see the nutritional breakdown of all of the ingredients.",
   "icons": { "128": "images/icon.png" },
   "background": { "scripts": ["background.js"] },

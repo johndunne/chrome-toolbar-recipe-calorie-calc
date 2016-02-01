@@ -5,31 +5,63 @@ var globalID = null;
 
 // The background page is asking us to find an address on the page.
 if (window == top) {
-  chrome.extension.onRequest.addListener(function(req, sender, sendResponse) {
-    sendResponse(findRecipe());
-  });
-
-  chrome.storage.sync.get('userid', function(items) {
-    var userid = items.userid;
-    if (userid) {
-        useToken(userid);
-    } else {
-        userid = getRandomToken();
-        chrome.storage.sync.set({userid: userid}, function() {
-            useToken(userid);
+    if(chrome.extension.onRequest) {
+        chrome.extension.onRequest.addListener(function (req, sender, sendResponse) {
+            sendResponse(findRecipe());
         });
     }
-    function useToken(userid) {
-        globalID = userid;
+
+    if(chrome.storage) {
+        chrome.storage.sync.get('userid', function (items) {
+            var userid = items.userid;
+            if (userid) {
+                useToken(userid);
+            } else {
+                userid = getRandomToken();
+                chrome.storage.sync.set({userid: userid}, function () {
+                    useToken(userid);
+                });
+            }
+            function useToken(userid) {
+                globalID = userid;
+            }
+        });
     }
-  });
 }
 
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.method == "getSelection")
-        sendResponse({data: window.getSelection().toString(),recipe_url:document.URL});
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.method == "getSelection") {
+        sendResponse({data: window.getSelection().toString(), recipe_url: document.URL});
+    } else if (request.method == "postForm") {
+        console.log("Psting?");
+        console.log("Psting!");
+        // Ensure it is run only once, as we will try to message twice
+        chrome.runtime.onMessage.removeListener(onMessageHandler);
+
+        // code from http://stackoverflow.com/a/7404033/934239
+        if (request.data["recipe_url"]) {
+            var recipe_url = document.getElementById("recipe_url");
+            recipe_url.innerHTML = request.data["recipe_url"];
+        }
+        var pre = document.getElementById("ingredients")
+        pre.innerHTML = "<pre>" + request.data["ingredients"] + "</pre>";
+
+        var form = document.createElement("form");
+        form.setAttribute("method", "post");
+        form.setAttribute("action", request.url);
+        for (var key in request.data) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", request.data[key]);
+            form.appendChild(hiddenField);
+        }
+        document.body.appendChild(form);
+        form.submit();
+    }
     else
         sendResponse({}); // Not interested
+    return true;
 });
 
 function getRandomToken() {
