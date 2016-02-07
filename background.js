@@ -9,19 +9,66 @@ var selectedId = null;
 var currentIngredientBoxContent = "";
 var currentRecipeName = "";
 var currentRecipePortions = 0;
+var debugMode=isDevMode();
 
  // The code below is sample code for enabling right click features in a plugin
 // See: https://developer.chrome.com/extensions/contextMenus#type-ContextType
 parseCalorieMash = function(word){
+    if(debugMode)console.log("Received parse request");
     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+        if(debugMode)console.log("The current tab is:");
+        if(debugMode)console.log(tabs[0]);
+        if(debugMode)console.log("Sending message to current tab:");
         chrome.tabs.sendMessage(tabs[0].id, {method: "getSelection"},
             function (response) {
-                var query = response.data;
-                var recipe_url = response.recipe_url; // The recipe_url can help provide recipe name, and
-                postData("https://caloriemash.com/ingredient-calories.html", {
-                    "ingredients": query,
-                    "recipe_url": recipe_url
-                });
+                if(response) {
+                    if(debugMode)console.log("Got response:");
+                    if(debugMode)console.log(response);
+                    var query = response.data;
+                    var recipe_url = response.recipe_url; // The recipe_url can help provide recipe name, and
+                    postData("https://caloriemash.com/ingredient-calories.html", {
+                        "ingredients": query,
+                        "recipe_url": recipe_url
+                    });
+                }else{
+                    console.error("There's no onMessage listener attached to the tab!");
+                }
+            });
+    });
+};
+function utf8_to_b64( str ) {
+    return window.btoa(unescape(encodeURIComponent( str )));
+}
+
+function b64_to_utf8( str ) {
+    return decodeURIComponent(escape(window.atob( str )));
+}
+
+sourceCalorieMash = function(word){
+    if(debugMode)console.log("Received parse request");
+    chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+        if(debugMode)console.log("The current tab is:");
+        if(debugMode)console.log(tabs[0]);
+        if(debugMode)console.log("Sending message to current tab:");
+        chrome.tabs.sendMessage(tabs[0].id, {method: "getSource"},
+            function (response) {
+                if(response) {
+                    // We're potentially handling senstive information here, since we're seeing what the
+                    // browser sees. This is important since many recipe manager sites are being user
+                    // signed pages. So, the recipe server can't parse those pages. We send only to extract
+                    // the ingredients and recipe title/description. Nothing else is recorded on the remote end.
+                    if(debugMode)console.log("Got response:");
+                    if(debugMode && response.source)console.log("Page source is " + response.source.length + " chars long.");
+                    var query = response.source;
+                    var b64 = utf8_to_b64( query );
+                    var recipe_url = response.recipe_url; // The recipe_url can help provide recipe name, and
+                    postData("https://caloriemash.com/ingredient-calories.html", {
+                        "page_source_b": b64 ,
+                        "recipe_url": recipe_url
+                    });
+                }else{
+                    console.error("There's no onMessage listener attached to the tab!");
+                }
             });
     });
 };
@@ -30,7 +77,8 @@ var latestIngredientsParsingData = false;
 
 var onIngreidentsParseMessageHandler = function(sender,request,sendResponse){
     sendResponse(latestIngredientsParsingData);
-}
+};
+
 chrome.runtime.onMessage.addListener(onIngreidentsParseMessageHandler);
 
 function postData(url, data) {
@@ -54,10 +102,14 @@ function postData(url, data) {
     );
 }
 
+function isDevMode() {
+    return !('update_url' in chrome.runtime.getManifest());
+}
+
 chrome.contextMenus.create({
     title: "Parse ingredients (new tab)",
     contexts:["selection"],  // ContextType
-    onclick: parseCalorieMash // A callback function
+    onclick: sourceCalorieMash // A callback function
 });
 
 if(chrome.storage.local) {
@@ -79,7 +131,7 @@ if(chrome.storage.local) {
 
 }
 //chrome.browserAction.setBadgeText({text: "yeah"});
-function updateRecipe(tabId) {
+/*function updateRecipe(tabId) {
   chrome.tabs.sendRequest(tabId, {}, function(recipe_url) {
       if (recipe_url) {
           console.log("updateRecipe->: recipe_url:" + recipe_url);
@@ -94,12 +146,12 @@ function updateRecipe(tabId) {
           }
       }
   });
-}
+}*/
 
-function updateSelected(tabId) {
+/*function updateSelected(tabId) {
     selectedRecipe = addresses[tabId];
     chrome.pageAction.setTitle({tabId:tabId, title:selectedRecipe});
-}
+}*/
 
 function saveRecipeNameContent( content ){
     currentRecipeName = content;
@@ -147,7 +199,7 @@ function getRandomToken() {
     return hex;
 }
 
-if(chrome.tabs.onSelectionChanged) {
+/*if(chrome.tabs.onSelectionChanged) {
     chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
         if (change.status == "complete") {
             updateRecipe(tabId);
@@ -162,10 +214,10 @@ if(chrome.tabs.onSelectionChanged) {
       updateRecipe(tabs[0].id);
     });
 
-}
+}*/
 
-if(chrome.extension.onRequest) {
+/*if(chrome.extension.onRequest) {
     chrome.extension.onRequest.addListener(function (request, sender) {
         chrome.tabs.update(sender.tab.id, {url: request.redirect});
     });
-}
+}*/

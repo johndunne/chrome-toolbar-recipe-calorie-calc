@@ -1,8 +1,3 @@
-// Copyright (c) 2011 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-var globalID = null;
-
 // The background page is asking us to find an address on the page.
 if (window == top) {
     if(chrome.extension.onRequest) {
@@ -11,14 +6,51 @@ if (window == top) {
         });
     }
 }
-
+console.log("Attaching onMessage listener to page: " + window.href);
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    console.log("Received get selection message");
+    console.log(request);
     if (request.method == "getSelection") {
         sendResponse({data: window.getSelection().toString(), recipe_url: document.URL});
+    }else if (request.method == "getSource") {
+        sendResponse({source: DOMtoString(document), recipe_url: document.URL});
     }else
         sendResponse({}); // Not interested
     return true;
 });
+
+function DOMtoString(document_root) {
+    var html = '',
+        node = document_root.firstChild;
+    while (node) {
+        switch (node.nodeType) {
+            case Node.ELEMENT_NODE:
+                html += node.outerHTML;
+                break;
+            case Node.TEXT_NODE:
+                html += node.nodeValue;
+                break;
+            case Node.CDATA_SECTION_NODE:
+                html += '<![CDATA[' + node.nodeValue + ']]>';
+                break;
+            case Node.COMMENT_NODE:
+                html += '<!--' + node.nodeValue + '-->';
+                break;
+            case Node.DOCUMENT_TYPE_NODE:
+                // (X)HTML documents are identified by public identifiers
+                html += "<!DOCTYPE " + node.name + (node.publicId ? ' PUBLIC "' + node.publicId + '"' : '') + (!node.publicId && node.systemId ? ' SYSTEM' : '') + (node.systemId ? ' "' + node.systemId + '"' : '') + '>\n';
+                break;
+        }
+        node = node.nextSibling;
+    }
+    return html;
+}
+
+chrome.runtime.sendMessage({
+    action: "getSource",
+    source: DOMtoString(document)
+});
+
 
 var findRecipe = function() {
   var x = document.URL;

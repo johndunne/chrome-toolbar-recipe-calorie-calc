@@ -1,6 +1,7 @@
 // Copyright (c) 2011 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+var debugMode=true;
 var current_recipe_url;
 /*function formatNumbers(){
     $( "*" ).each(function(index){ 
@@ -35,6 +36,15 @@ function _internalUpdateUIWithParsedIngredients(){
       }
   });
 }
+
+function utf8_to_b64( str ) {
+    return window.btoa(unescape(encodeURIComponent( str )));
+}
+
+function b64_to_utf8( str ) {
+    return decodeURIComponent(escape(window.atob( str )));
+}
+
 
 function map() {
     var initaliser = {scheme: "https", debug: false,enable_persistent_visitor:true,application_name:"CalorieMash chrome ext"};
@@ -152,7 +162,6 @@ function map() {
                 });
 
                 $("#recipe_ingredients").keyup(function (e) {
-                    console.log("Key event");
                     chrome.extension.getBackgroundPage().saveIngredientsContent($("#recipe_ingredients").val());
                     chrome.extension.getBackgroundPage().saveRecipePortionsContent($("#recipe_portions").val());
                     chrome.extension.getBackgroundPage().saveRecipeNameContent($("#recipe_name").val());
@@ -192,7 +201,105 @@ function map() {
 
             });
         };
-        showParseIngredients();
+        function showParseUrl() {
+            if(debugMode)console.log("Received parse request");
+            chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+                if(debugMode)console.log("The current tab is:");
+                if(debugMode)console.log(tabs[0]);
+                if(debugMode)console.log("Sending message to current tab:");
+                chrome.tabs.sendMessage(tabs[0].id, {method: "getSource"},
+                    function (response) {
+                        if(response) {
+                            // We're potentially handling senstive information here, since we're seeing what the
+                            // browser sees. This is important since many recipe manager sites are being user
+                            // signed pages. So, the recipe server can't parse those pages. We send only to extract
+                            // the ingredients and recipe title/description. Nothing else is recorded on the remote end.
+                            if(debugMode)console.log("Got response:");
+                            if(debugMode && response.source)console.log("Page source is " + response.source.length + " chars long.");
+                            var query = response.source;
+                            var b64 = utf8_to_b64( query );
+                            var recipe_url = response.recipe_url; // The recipe_url can help provide recipe name, and
+                            recipeCalCalcParseRecipePageBase64(recipe_url,b64,{},function(success,super_recipe) {
+                                getTextTemplate("parse-ingredients-template", function (source) {
+                                    var template = Handlebars.compile(source);
+                                    var info = template({});
+                                    $('#recipe-content').html(info);
+                                    $("#recipe_ingredients").html(super_recipe.ingredients);
+                                    $("#recipe_portions").val(super_recipe.portions);
+                                    $("#recipe_name").val(super_recipe.name);
+                                    getTextTemplate("recipe-template", function (source) {
+                                        var template = Handlebars.compile(source);
+                                        var info = template(super_recipe);
+                                        $('#parsed-ingredients-content').html(info);
+                                    });
+                                    //$("#save-recipe").click(function () {
+                                    //    var recipe_object = {};
+                                    //    recipe_object.ingredients = $("#recipe_ingredients").val();
+                                    //    recipe_object.portions = $("#recipe_portions").val();
+                                    //    recipe_object.name = $("#recipe_name").val();
+                                    //    CreateRecipe(recipe_object, function (success, data_in) {
+                                    //        if (success === true) {
+                                    //            ShowMyRecipes();
+                                    //        } else {
+                                    //            ShowGeneralError(data_in);
+                                    //        }
+                                    //    });
+                                    //});
+                                    //if ($("#recipe_ingredients").val().length > 0) {
+                                    //    _internalUpdateUIWithParsedIngredients();
+                                    //}
+
+                                    $("#recipe_name").keyup(function (e) {
+                                        chrome.extension.getBackgroundPage().saveRecipeNameContent($("#recipe_name").val());
+                                    });
+
+                                    $("#recipe_ingredients").keyup(function (e) {
+                                        chrome.extension.getBackgroundPage().saveIngredientsContent($("#recipe_ingredients").val());
+                                        chrome.extension.getBackgroundPage().saveRecipePortionsContent($("#recipe_portions").val());
+                                        chrome.extension.getBackgroundPage().saveRecipeNameContent($("#recipe_name").val());
+                                        _internalUpdateUIWithParsedIngredients();
+                                    });
+                                    $("#recipe_portions").keyup(function (e) {
+                                        chrome.extension.getBackgroundPage().saveIngredientsContent($("#recipe_ingredients").val());
+                                        chrome.extension.getBackgroundPage().saveRecipePortionsContent($("#recipe_portions").val());
+                                        chrome.extension.getBackgroundPage().saveRecipeNameContent($("#recipe_name").val());
+                                        var options = {};
+                                        if ($("#recipe_portions").val() > 0) {
+                                            options.portions = $("#recipe_portions").val();
+                                        }
+                                        //
+                                        // Refresh ingredient's results in the locally parsed recipe object being updarted with the new porttions value,
+                                        // and the local HTML page refreshing with the new values.
+                                        refreshIngredients(options, function (recipe, error) {
+                                            if (error) {
+                                                ShowGeneralError(error);
+                                            } else {
+                                                getTextTemplate("recipe-template", function (source) {
+                                                    var template = Handlebars.compile(source);
+                                                    var info = template(recipe);
+                                                    $('#parsed-ingredients-content').html(info);
+                                                });
+                                            }
+                                        });
+                                    });
+
+                                    $("input[type='submit']").click(function () {
+                                        return false;
+                                    });
+                                    $("form").submit(function () {
+                                        return false;
+                                    });
+
+                                });
+                            });
+                        }else{
+                            console.error("There's no onMessage listener attached to the tab!");
+                        }
+                    });
+            });
+
+        };
+        showParseUrl();
 
         //
         // Setup the nav bar
@@ -201,6 +308,10 @@ function map() {
             $("#recipe_portions").val("");
             $("#recipe_name").val("");
             $("#parsed-ingredients-content").html("");
+        });
+
+        $("#parse-current-page").click(function () {
+            showParseIngredients();
         });
 
         $("#show-parse-ingredients").click(function () {
