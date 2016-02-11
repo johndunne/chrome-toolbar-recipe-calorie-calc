@@ -233,11 +233,17 @@ function map() {
                             var query = response.source;
                             var b64 = utf8_to_b64( query );
                             var recipe_url = response.recipe_url; // The recipe_url can help provide recipe name, and
-                            recipeCalCalcParseRecipePageBase64(recipe_url,b64,{},function(success,super_recipe) {
-                                getTextTemplate("parse-ingredients-template", function (source) {
+                            recipeCalCalcParseRecipePageBase64(recipe_url,b64,{nutritionLabel:{}},function(success,super_recipe) {
+                                if ( !success ){
+                                    ShowGeneralError("No recipe information was found on the page. Try selecting the ingredients and then right clicking and choosing 'Parse ingredients'. <a href='mailto:support@caloriemash.com'>Contact support</a>");
+                                    return;
+                                }
+                                //getTextTemplate("parse-ingredients-template", function (source) {
+                                getTextTemplate("super-recipe-template", function (source) {
                                     var template = Handlebars.compile(source);
                                     var info = template({});
                                     $('#recipe-content').html(info);
+                                    $('#nutrition-label').nutritionLabel( super_recipe );
                                     $("#recipe_ingredients").html(super_recipe.ingredients);
                                     $("#recipe_portions").val(super_recipe.portions);
                                     $("#recipe_name").val(super_recipe.name);
@@ -246,19 +252,15 @@ function map() {
                                         var info = template(super_recipe);
                                         $('#parsed-ingredients-content').html(info);
                                     });
-                                    //$("#save-recipe").click(function () {
-                                    //    var recipe_object = {};
-                                    //    recipe_object.ingredients = $("#recipe_ingredients").val();
-                                    //    recipe_object.portions = $("#recipe_portions").val();
-                                    //    recipe_object.name = $("#recipe_name").val();
-                                    //    CreateRecipe(recipe_object, function (success, data_in) {
-                                    //        if (success === true) {
-                                    //            ShowMyRecipes();
-                                    //        } else {
-                                    //            ShowGeneralError(data_in);
-                                    //        }
-                                    //    });
-                                    //});
+                                    $("#save-recipe").click(function () {
+                                        CreateRecipe(super_recipe, function (success, data_in) {
+                                            if (success === true) {
+                                                ShowMyRecipes();
+                                            } else {
+                                                ShowGeneralError(data_in);
+                                            }
+                                        });
+                                    });
                                     //if ($("#recipe_ingredients").val().length > 0) {
                                     //    _internalUpdateUIWithParsedIngredients();
                                     //}
@@ -307,6 +309,7 @@ function map() {
                                 });
                             });
                         }else{
+                            ShowGeneralError("Failed to connect to the CalorieMash.com server.");
                             console.error("There's no onMessage listener attached to the tab!");
                         }
                     });
@@ -325,7 +328,7 @@ function map() {
         });
 
         $("#parse-current-page").click(function () {
-            showParseIngredients();
+            showParseUrl();
         });
 
         $("#show-parse-ingredients").click(function () {
@@ -420,7 +423,6 @@ function ShowMyRecipes(){
 }
 
 function ShowGeneralError(error_message){
-    console.trace();
     getTextTemplate("general-error-template", function (source) {
         var template = Handlebars.compile(source);
         var info = template({error_message:error_message});
@@ -428,12 +430,22 @@ function ShowGeneralError(error_message){
     });
 
 }
+
+function ShowGeneralWorkingMessage(working_message){
+    getTextTemplate("general-working-template", function (source) {
+        var template = Handlebars.compile(source);
+        var info = template({working_message:working_message});
+        $('#recipe-content').html(info);
+    });
+
+}
+
 function rateRecipe( rating ){
-  console.log("Setting rating: " + rating);
+  if(debugMode)console.log("Setting rating: " + rating);
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
         if (request.readyState == 4 && (request.status == 200||request.status == 201)) {
-          console.log("ratRecipe: " + request.responseText);
+          if(debugMode)console.log("rateRecipe: " + request.responseText);
         }
     }
 

@@ -34,4 +34,5 @@ var onMessageHandler = function(sender,request,sendResponse){
     }
     return true;
 }
+console.log("Attaching post listener");
 chrome.runtime.onMessage.addListener(onMessageHandler);

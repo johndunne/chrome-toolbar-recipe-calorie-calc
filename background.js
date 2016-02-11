@@ -109,7 +109,7 @@ function isDevMode() {
 chrome.contextMenus.create({
     title: "Parse ingredients (new tab)",
     contexts:["selection"],  // ContextType
-    onclick: sourceCalorieMash // A callback function
+    onclick: parseCalorieMash // A callback function
 });
 
 if(chrome.storage.local) {
