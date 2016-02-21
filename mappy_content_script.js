@@ -1,25 +1,72 @@
 // The background page is asking us to find an address on the page.
 if (window == top) {
-    if(chrome.extension.onRequest) {
+    if (chrome.extension.onRequest) {
         chrome.extension.onRequest.addListener(function (req, sender, sendResponse) {
             sendResponse(findRecipe());
         });
     }
 }
-console.log("Attaching onMessage listener to page: " + window.href);
+
+if ( document.URL.indexOf("caloriemash.com") >=0 ){
+    console.error("document.URL is caloriemash");
+    // Add a script to the head that will init the initRecipeCalCalc method for the caloriemash page
+    chrome.runtime.sendMessage({method: "id-data"}, function(response) {
+        if ( response ) {
+            console.log(response);
+            var element = document.createElement("script");
+            if (response.userId) {
+                element.innerHTML = 'var RecipeCalCalc={userId:"' + response.userId + '"};';
+            }
+            else if (response.apiKey) {
+                element.innerHTML = 'var RecipeCalCalc={apiKey:"' + response.apiKey + '"};';
+            } else {
+                element.innerHTML = 'var RecipeCalCalc={};';
+            }
+            element.innerHTML += 'doFacebookLogin(RecipeCalCalc.userId);';
+
+            if(document.head){
+                console.log("head");
+            }else{
+                console.log("element");
+            }
+            (document.head ? document.head : document.documentElement).appendChild(element);
+            var element2 = document.createElement("script");
+            element2.src="/js/recipeEngine.js";
+            (document.head ? document.head : document.documentElement).appendChild(element2);
+        }else{
+            console.error("No response!");
+        }
+    });
+}else{
+    console.error("document.URL isn' caloriemash");
+}
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     console.log("Received get selection message");
     console.log(request);
     if (request.method == "getSelection") {
         sendResponse({data: window.getSelection().toString(), recipe_url: document.URL});
+    }else if (request.method == "getLocalAppIds") {
+        sendResponse({api_key: _getLocalApiId(), user_id: _getLocalUserId(), recipe_url: document.URL});
     }else if (request.method == "getSource") {
         sendResponse({source: DOMtoString(document), recipe_url: document.URL});
-    }else
+    }else {
         sendResponse({}); // Not interested
+    }
     return true;
 });
 
-function DOMtoString(document_root) {
+function walkTheDOM(node, func) {
+    func(node);
+    node = node.firstChild;
+    while (node) {
+        walkTheDOM(node, func);
+        node = node.nextSibling;
+    }
+}
+
+function DOMtoString(document_root) { // TODO URGENT Don't spit out <script> which is not interesting for the parser
+    //walkTheDOM(d.firstChild, function (node) { if (node.nodeType === Node.ELEMENT_NODE) { if (node.outerHTML && node.outerHTML.indexOf("<script")==0 ){ console.log(node); } } });
     var html = '',
         node = document_root.firstChild;
     while (node) {
@@ -43,13 +90,34 @@ function DOMtoString(document_root) {
         }
         node = node.nextSibling;
     }
+    /*var source_html="";
+    var ignore=false;
+    try {
+        html.split("\n").forEach(function (e) {
+            if (ignore && e.indexOf("</head>") >= 0) {
+                e = e.replace("</head>", "");
+                ignore = false;
+            }
+            if (e.indexOf("<head>") >= 0) {
+                e = e.replace("<head>", "");
+                ignore = true;
+            }
+            if (!ignore) {
+                source_html += e;
+            }
+        });
+    }catch(e){
+        return html;
+    }
+    return source_html;*/
     return html;
 }
 
-chrome.runtime.sendMessage({
-    action: "getSource",
-    source: DOMtoString(document)
-});
+// This is useful for debugging
+//chrome.runtime.sendMessage({
+//    action: "getSource",
+//    source: DOMtoString(document)
+//});
 
 var findRecipe = function() {
   var x = document.URL;
@@ -67,4 +135,3 @@ var findRecipe = function() {
   }
   return null;
 }
-
