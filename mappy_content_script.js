@@ -12,7 +12,16 @@ if ( document.URL.indexOf("caloriemash.com") >=0 ){
     // Add a script to the head that will init the initRecipeCalCalc method for the caloriemash page
     chrome.runtime.sendMessage({method: "id-data"}, function(response) {
         if ( response ) {
+
             console.log(response);
+            console.log(response);
+
+            var elementa = document.createElement("script");
+            elementa.src="/js/caloriemash.fb.js";
+            (document.head ? document.head : document.documentElement).appendChild(elementa);
+
+
+
             var element = document.createElement("script");
             if (response.userId) {
                 element.innerHTML = 'var RecipeCalCalc={userId:"' + response.userId + '"};';
@@ -30,9 +39,12 @@ if ( document.URL.indexOf("caloriemash.com") >=0 ){
                 console.log("element");
             }
             (document.head ? document.head : document.documentElement).appendChild(element);
+
             var element2 = document.createElement("script");
             element2.src="/js/recipeEngine.js";
             (document.head ? document.head : document.documentElement).appendChild(element2);
+
+
         }else{
             console.error("No response!");
         }

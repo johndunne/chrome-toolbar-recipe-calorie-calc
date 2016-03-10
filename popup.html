@@ -8,6 +8,7 @@
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/popup.css" rel="stylesheet" type="text/css">
     <script src='jquery-1.10.2.js'> </script>
+    <script src='bootstrap.min.js'> </script>
   </head>
   <body>
     <nav class="navbar navbar-default navbar-static-top">
@@ -100,6 +101,14 @@
     </div>
 </script>
 
+<script id="general-alert-template" type="text/template" charset="utf-8">
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4>{{warning_header}}</h4>
+        <p><strong>Warning!</strong> {{warning_message}}</p>
+    </div>
+</script>
+
 <script id="empty-recipe-template" type="text/template" charset="utf-8">
     <div class="panel panel-success">
         <div class="panel-heading clearfix">
@@ -120,7 +129,7 @@
     </div>
     {{description}}
     <table class="table table-striped table-bordered table-condensed">
-        <tr><th>Ingredient</th><th>Calories</th><th>Amount</th><th>Fat</th><th>Sugar</th><th>Protein</th></tr>
+        <tr><th>Ingredient</th><th>Calories</th><th>Amount</th><th>Fat</th><th>Carbs</th><th>Sugar</th><th>Protein</th></tr>
         {{#nutrition}}
           {{#if header}}
           <tr><td colspan="6"><strong>{{ingredient_line}}</strong></td></tr>
@@ -129,6 +138,7 @@
             <td><span class="calorie-number" id="calories_for_{{seq}}">{{calories}}</span></td>
             <td><span class="macro-nutrient-number" id="amount_for_{{seq}}">{{amount}}{{unit}}</span></td>
             <td><span class="macro-nutrient-number" id="total_fat_for_{{seq}}">{{total_fat}}g</span></td>
+            <td><span class="macro-nutrient-number" id="total_carbs_for_{{seq}}">{{carbs}}g</span></td>
             <td><span class="macro-nutrient-number" id="total_sugar_for_{{seq}}">{{total_sugar}}g</span></td>
             <td><span class="macro-nutrient-number" id="protein_for_{{seq}}">{{protein}}g</span></td>
           </tr>
@@ -139,6 +149,7 @@
                 <td><span class="calorie-number" id="calories_per_portion">{{nutrition_per_portion.calories}}</span></td>
                 <td><span class="macro-nutrient-number" id="amount_per_portion">{{nutrition_per_portion.amount}}g</span></td>
                 <td><span class="macro-nutrient-number" id="total_fat_per_portion">{{nutrition_per_portion.total_fat}}g</span></td>
+                <td><span class="macro-nutrient-number" id="total_carbs_per_portion">{{nutrition_per_portion.carbs}}g</span></td>
                 <td><span class="macro-nutrient-number" id="total_sugar_per_portion">{{nutrition_per_portion.total_sugar}}g</span></td>
                 <td><span class="macro-nutrient-number" id="protein_per_portion">{{nutrition_per_portion.protein}}g</span></td>
             </tr>
@@ -148,6 +159,7 @@
             <td><span class="calorie-number" id="calories_total">{{multiply nutrition_per_portion.calories nutrition_per_portion.portions}}</span></td>
             <td><span class="macro-nutrient-number" id="amount_total">{{multiply nutrition_per_portion.amount nutrition_per_portion.portions}}g</span></td>
             <td><span class="macro-nutrient-number" id="total_fat_total">{{multiply nutrition_per_portion.total_fat nutrition_per_portion.portions}}g</span></td>
+            <td><span class="macro-nutrient-number" id="total_carbs_total">{{multiply nutrition_per_portion.carbs nutrition_per_portion.portions}}g</span></td>
             <td><span class="macro-nutrient-number" id="total_sugar_total">{{multiply nutrition_per_portion.total_sugar nutrition_per_portion.portions}}g</span></td>
             <td><span class="macro-nutrient-number" id="protein_total">{{multiply nutrition_per_portion.protein nutrition_per_portion.portions}}g</span></td>
         </tr>
@@ -159,6 +171,7 @@
         <tr><td><h4>Recipe</h4></td>
             <td><h4>Calories <small>per portion</small></h4></td>
             <td><h4>Fat<small>per portion</small></h4></td>
+            <td><h4>Carbs<small>per portion</small></h4></td>
             <td><h4>Sugar<small>per portion</small></h4></td>
             <td><h4>Protein<small>per portion</small></h4></td>
         </tr>
@@ -167,12 +180,13 @@
         <tr><td><span><a clickable="true" recipe_id="{{recipe_id}}">{{name}}</a></span></td>
             <td><span class="calorie-number">{{nutrition_per_portion.calories}}</span></td>
             <td><span class="macro-nutrient-number">{{nutrition_per_portion.total_fat}}g</span></td>
+            <td><span class="macro-nutrient-number">{{nutrition_per_portion.carbs}}g</span></td>
             <td><span class="macro-nutrient-number">{{nutrition_per_portion.total_sugar}}g</span></td>
             <td><span class="macro-nutrient-number">{{nutrition_per_portion.protein}}g</span></td>
           </tr>
         {{/recipes}}
         {{else}}
-        <tr><td colspan="5"><div style="text-align: center;width: 100%;"><h4>No recipes found.</h4><small>You can add recipes from the <b>Parse</b> section. Enter ingredients into the parse box and hit <b>Save</b>.</small></div></td>
+        <tr><td colspan="6"><div style="text-align: center;width: 100%;"><h4>No recipes found.</h4><small>You can add recipes from the <b>Parse</b> section. Enter ingredients into the parse box and hit <b>Save</b>.</small></div></td>
         </tr>
         {{/if}}
     </table>
@@ -183,6 +197,7 @@
         <tr><th>Recipe</th>
             <td><h4>Calories <small>per portion</small></h4></td>
             <td><h4>Fat<small>per portion</small></h4></td>
+            <td><h4>Carbs<small>per portion</small></h4></td>
             <td><h4>Sugar<small>per portion</small></h4></td>
             <td><h4>Protein<small>per portion</small></h4></td>
         </tr>
@@ -190,6 +205,7 @@
         <tr><td><span><a clickable="true" recipe_id="{{recipe_id}}">{{name}}</a></span></td>
             <td><span class="calorie-number">{{calories}}</span></td>
             <td><span class="macro-nutrient-number">{{total_fat}}g</span></td>
+            <td><span class="macro-nutrient-number">{{carbs}}g</span></td>
             <td><span class="macro-nutrient-number">{{total_sugar}}g</span></td>
             <td><span class="macro-nutrient-number">{{protein}}g</span></td>
           </tr>
@@ -206,6 +222,7 @@
                 <button id='export-csv' type='button' class='btn btn-primary btn-sm'>CSV</button>
                 <button id='export-png' type='button' class='btn btn-primary btn-sm'>PNG</button>
                 <button id='export-pdf' type='button' class='btn btn-primary btn-sm'>PDF</button>
+                <button id='delete-recipe' type='button' class='btn btn-danger btn-sm' recipe-id="{{recipe_id}}">Delete recipe</button>
             </div>
         </div>
     </div>
@@ -386,12 +403,13 @@
     <div class="row">
         <div class="col-xs-7 col-md-9" style="padding-right:6px">
             <table class="table table-striped table-bordered table-condensed">
-                <tr><th>Ingredient</th><th>Calories</th><th>Amount</th><th>Fat</th><th>Sugar</th><th>Protein</th></tr>
+                <tr><th>Ingredient</th><th>Calories</th><th>Amount</th><th>Fat</th><th>Carbs</th><th>Sugar</th><th>Protein</th></tr>
                 {{#nutrition}}
                 <tr><td><span id="aname_{{seq}}" seq="{{seq}}" changeable_food data-toggle="tooltip" title="{{debug_output}}" grams="{{amount}}" food_id="{{food_id}}">{{ingredient_line}}</span></td>
                     <td><span class="calorie-number" id="acalories_for_{{seq}}">{{calories}}</span></td>
                     <td><span class="macro-nutrient-number" id="aamount_for_{{seq}}">{{amount}}{{unit}}g</span></td>
                     <td><span class="macro-nutrient-number" id="atotal_fat_for_{{seq}}">{{total_fat}}g</span></td>
+                    <td><span class="macro-nutrient-number" id="atotal_carbs_for_{{seq}}" i={{carbs}}>{{carbs}}g</span></td>
                     <td><span class="macro-nutrient-number" id="atotal_sugar_for_{{seq}}">{{total_sugar}}g</span></td>
                     <td><span class="macro-nutrient-number" id="aprotein_for_{{seq}}">{{protein}}g</span></td></tr>
                 {{/nutrition}}
@@ -400,6 +418,7 @@
                     <td><span class="calorie-number" id="acalories_per_portion">{{nutrition_per_portion.calories}}</span></td>
                     <td><span class="macro-nutrient-number" id="aamount_per_portion">{{nutrition_per_portion.amount}}g</span></td>
                     <td><span class="macro-nutrient-number" id="atotal_fat_per_portion">{{nutrition_per_portion.total_fat}}g</span></td>
+                    <td><span class="macro-nutrient-number" id="atotal_carbs_per_portion" {{nutrition_per_portion.carbs}}>{{nutrition_per_portion.carbs}}g</span></td>
                     <td><span class="macro-nutrient-number" id="atotal_sugar_per_portion">{{nutrition_per_portion.total_sugar}}g</span></td>
                     <td><span class="macro-nutrient-number" id="aprotein_per_portion">{{nutrition_per_portion.protein}}g</span></td>
                 </tr></tr>
@@ -408,10 +427,12 @@
                     <td><span class="calorie-number" id="acalories_total">{{multiply nutrition_per_portion.calories nutrition_per_portion.portions}}</span></td>
                     <td><span class="macro-nutrient-number" id="aamount_total">{{multiply nutrition_per_portion.amount nutrition_per_portion.portions}}g</span></td>
                     <td><span class="macro-nutrient-number" id="atotal_fat_total">{{multiply nutrition_per_portion.total_fat nutrition_per_portion.portions}}g</span></td>
+                    <td><span class="macro-nutrient-number" id="atotal_carbs_total">{{multiply nutrition_per_portion.carbs nutrition_per_portion.portions}}g</span></td>
                     <td><span class="macro-nutrient-number" id="atotal_sugar_total">{{multiply nutrition_per_portion.total_sugar nutrition_per_portion.portions}}g</span></td>
                     <td><span class="macro-nutrient-number" id="aprotein_total">{{multiply nutrition_per_portion.protein nutrition_per_portion.portions}}g</span></td>
                 </tr>
-            </table>        </div>
+            </table>
+        </div>
         <div class="col-xs-5 col-md-3" style="padding:6px">
             <div id="nutrition-label"></div>
         </div>

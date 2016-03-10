@@ -32,6 +32,7 @@ function _internalUpdateUIWithParsedIngredients(){
       if( recipe===false ){
           ShowGeneralError(error);
       }else {
+          $('#nutrition-label').nutritionLabel( recipe );
           getTextTemplate("recipe-template", function (source) {
               var template = Handlebars.compile(source);
               var info = template(recipe);
@@ -403,6 +404,23 @@ function FetchRecipeSuperObject(recipe_id){
                     var url = "https://recipecalcalc.com/api/recipe/" + recipe_id + "/nutrition-label/pdf";
                     chrome.tabs.create({url: url});
                 });
+                $('#delete-recipe').click(function(){
+                    var recipe_id=$(this).attr("recipe-id");
+                    console.log("Deleting recipe " + recipe_id );
+                    ShowAlertMessage("Are you sure you want to delete this recipe?","Delete","Cancel","",function(cancelled) {
+                        if(cancelled){
+
+                        }else {
+                            DeleteRecipe(recipe_id, {}, function (success, data) {
+                                if (success) {
+                                    ShowMyRecipes();
+                                } else {
+                                    ShowGeneralError(data);
+                                }
+                            });
+                        }
+                    });
+                });
                 vitaminChangeNames();
             });
             $('#recipe_error_message').text("");
@@ -437,6 +455,50 @@ function ShowGeneralError(error_message){
         var template = Handlebars.compile(source);
         var info = template({error_message:error_message});
         $('#recipe-content').html(info);
+    });
+
+}
+
+function ShowAlertMessage(warning_message,warning_confirm_text,warning_cancel_text,warning_header,action){
+    if($("#general-alert-message").length){
+        console.log("There's already an alert message showing.");
+        return;
+    }
+    if (!warning_message || warning_message.length==0){
+        console.error("I can't show an alert without a warning message");
+        return;
+    }
+    if (!warning_confirm_text || warning_confirm_text.length==0){
+        console.error("I can't show an alert without the confirm button text");
+        return;
+    }
+    if (!warning_cancel_text || warning_cancel_text.length==0){
+        warning_cancel_text="Cancel";
+    }
+    if("function"!==typeof action){
+        console.error(typeof action);
+        console.error("I need an action function.");
+        return;
+    }
+    getTextTemplate("general-alert-template", function (source) {
+        var template = Handlebars.compile(source);
+        var info = template({warning_message:warning_message,warning_confirm_text:warning_confirm_text,warning_header:warning_header,warning_cancel_text:warning_cancel_text});
+        var new_alert_box = $(info);
+        new_alert_box.attr("id","general-alert-message");
+        new_alert_box.alert();
+
+        new_alert_box.append('<button type="button" class="btn btn-sm btn-default" id="general-alert-cancel">' + warning_cancel_text + '</button>');
+        new_alert_box.append('<button type="button" class="btn btn-sm btn-danger" id="general-alert-doit">' + warning_confirm_text + '</button>');
+
+        $('#recipe-content').prepend(new_alert_box);
+
+        $("#general-alert-doit").click(function(){
+            action(false);
+            new_alert_box.close();
+        });
+        $("#general-alert-cancel").click(function(){
+            new_alert_box.close();
+        });
     });
 
 }
@@ -556,12 +618,10 @@ var performMyAccountAction = function () {
                 });
                 if (user_id) {
                     RequestApiKey({}, function (success, api_key) {
-                        console.error(api_key);
-                        chrome.extension.getBackgroundPage().saveApiKey(api_key);
+                        if(debugMode)console.log(api_key);
                     });
                     TakeGuestRecipes(user_id, {}, function (success, data) {
-                        console.error(data);
-                        chrome.extension.getBackgroundPage().uniqueUserID = null;
+                        if(debugMode)console.log(data);
                     });
                 }
             }
@@ -593,10 +653,10 @@ var setupLoginUI = function setupLoginUI() {
         });
     });
     $("#btn-fbsignup").click(function (button) {
-        chrome.tabs.create({url: "https://caloriemash.com/fbsignup.html"}); // The content script will inject the user_id into the page
+        chrome.tabs.create({url: "https://caloriemash.com/pluginfbsignup.html"}); // The content script will inject the user_id into the page
     });
     $("#btn-fblogin").click(function (button) {
-        chrome.tabs.create({url: "https://caloriemash.com/fbsignup.html"});
+        chrome.tabs.create({url: "https://caloriemash.com/pluginfbsignup.html"});
     });
     $("#btn-signup").click(function (button) {
         var inputs = $("#signupform");
