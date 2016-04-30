@@ -8,30 +8,23 @@ if (window == top) {
 }
 
 if ( document.URL.indexOf("caloriemash.com") >=0 ){
-    console.error("document.URL is caloriemash");
+    //if(debug)console.log("document.URL is caloriemash");
     // Add a script to the head that will init the initRecipeCalCalc method for the caloriemash page
     chrome.runtime.sendMessage({method: "id-data"}, function(response) {
         if ( response ) {
-
-            console.log(response);
-            console.log(response);
-
             var elementa = document.createElement("script");
             elementa.src="/js/caloriemash.fb.js";
             (document.head ? document.head : document.documentElement).appendChild(elementa);
 
-
-
             var element = document.createElement("script");
             if (response.userId) {
                 element.innerHTML = 'var RecipeCalCalc={userId:"' + response.userId + '"};';
-            }
-            else if (response.apiKey) {
+            }else if (response.apiKey) {
                 element.innerHTML = 'var RecipeCalCalc={apiKey:"' + response.apiKey + '"};';
             } else {
                 element.innerHTML = 'var RecipeCalCalc={};';
             }
-            element.innerHTML += 'doFacebookLogin(RecipeCalCalc.userId);';
+            element.innerHTML += 'doFacebookSignup(RecipeCalCalc.userId);';
 
             if(document.head){
                 console.log("head");
@@ -49,8 +42,8 @@ if ( document.URL.indexOf("caloriemash.com") >=0 ){
             console.error("No response!");
         }
     });
-}else{
-    console.error("document.URL isn' caloriemash");
+//}else{
+//    console.error("document.URL isn' caloriemash");
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {

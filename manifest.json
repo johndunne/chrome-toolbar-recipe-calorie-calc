@@ -16,7 +16,7 @@
     "http://localhost:1243/*"
   ],
   "browser_action": {
-      "default_name": "Calc ingredients nutrition",
+      "default_title": "Calc ingredients nutrition",
       "default_icon": "images/marker.png",
       "default_popup": "popup.html"
   },
