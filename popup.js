@@ -170,6 +170,7 @@ function map() {
                     recipe_object.name = $("#recipe_name").val();
                     CreateRecipe(recipe_object, function (success, data_in) {
                         if (success === true) {
+                            currentlyShowingView="load-my-recipes";
                             ShowMyRecipes();
                         } else {
                             ShowGeneralError(data_in);
@@ -430,6 +431,7 @@ function FetchRecipeSuperObject(recipe_id){
                         }else {
                             DeleteRecipe(recipe_id, {}, function (success, data) {
                                 if (success) {
+                                    currentlyShowingView="load-my-recipes";
                                     ShowMyRecipes();
                                 } else {
                                     ShowGeneralError(data);
