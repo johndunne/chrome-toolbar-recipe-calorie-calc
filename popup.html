@@ -136,7 +136,7 @@
           {{else}}
         <tr><td><span id="name_{{seq}}" seq="{{seq}}" changeable_food data-toggle="tooltip" title="{{debug_output}}" grams="{{amount}}" food_id="{{food_id}}">{{ingredient_line}}&nbsp;<img src="images/05-shuffle.png" width="14" height="10" changeable_food grams="{{amount}}" food_id="{{food_id}}" seq="{{seq}}" ></span></td>
             <td><span class="calorie-number" id="calories_for_{{seq}}">{{calories}}</span></td>
-            <td><span class="macro-nutrient-number" id="amount_for_{{seq}}">{{amount}}{{unit}}</span></td>
+            <td><span class="macro-nutrient-number" id="amount_for_{{seq}}">{{food_weight}}{{unit}}</span></td>
             <td><span class="macro-nutrient-number" id="total_fat_for_{{seq}}">{{total_fat}}g</span></td>
             <td><span class="macro-nutrient-number" id="total_carbs_for_{{seq}}">{{carbs}}g</span></td>
             <td><span class="macro-nutrient-number" id="total_sugar_for_{{seq}}">{{total_sugar}}g</span></td>
@@ -147,7 +147,7 @@
         {{#if nutrition_per_portion}}
             <tr><td class="text-right">Per portion</td>
                 <td><span class="calorie-number" id="calories_per_portion">{{nutrition_per_portion.calories}}</span></td>
-                <td><span class="macro-nutrient-number" id="amount_per_portion">{{nutrition_per_portion.amount}}g</span></td>
+                <td><span class="macro-nutrient-number" id="amount_per_portion">{{nutrition_per_portion.food_weight}}g</span></td>
                 <td><span class="macro-nutrient-number" id="total_fat_per_portion">{{nutrition_per_portion.total_fat}}g</span></td>
                 <td><span class="macro-nutrient-number" id="total_carbs_per_portion">{{nutrition_per_portion.carbs}}g</span></td>
                 <td><span class="macro-nutrient-number" id="total_sugar_per_portion">{{nutrition_per_portion.total_sugar}}g</span></td>
@@ -157,7 +157,7 @@
         <tr>
             <td class="text-right">Total</td>
             <td><span class="calorie-number" id="calories_total">{{multiply nutrition_per_portion.calories nutrition_per_portion.portions}}</span></td>
-            <td><span class="macro-nutrient-number" id="amount_total">{{multiply nutrition_per_portion.amount nutrition_per_portion.portions}}g</span></td>
+            <td><span class="macro-nutrient-number" id="amount_total">{{multiply nutrition_per_portion.food_weight nutrition_per_portion.portions}}g</span></td>
             <td><span class="macro-nutrient-number" id="total_fat_total">{{multiply nutrition_per_portion.total_fat nutrition_per_portion.portions}}g</span></td>
             <td><span class="macro-nutrient-number" id="total_carbs_total">{{multiply nutrition_per_portion.carbs nutrition_per_portion.portions}}g</span></td>
             <td><span class="macro-nutrient-number" id="total_sugar_total">{{multiply nutrition_per_portion.total_sugar nutrition_per_portion.portions}}g</span></td>
