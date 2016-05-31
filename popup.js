@@ -164,13 +164,13 @@ function map() {
                 $("#recipe_name").val(chrome.extension.getBackgroundPage().currentRecipeName);
 
                 $("#save-recipe").click(function () {
+                    console.log("Saving recipe:");
                     var recipe_object = {};
                     recipe_object.ingredients = $("#recipe_ingredients").val();
                     recipe_object.portions = $("#recipe_portions").val();
                     recipe_object.name = $("#recipe_name").val();
                     CreateRecipe(recipe_object, function (success, data_in) {
                         if (success === true) {
-                            currentlyShowingView="load-my-recipes";
                             ShowMyRecipes();
                         } else {
                             ShowGeneralError(data_in);
@@ -277,6 +277,7 @@ function map() {
                                         $('#parsed-ingredients-content').html(info);
                                     });
                                     $("#save-recipe").click(function () {
+                                        console.log("Saving recipe by creating:");
                                         CreateRecipe(super_recipe, function (success, data_in) {
                                             if (success === true) {
                                                 ShowMyRecipes();
@@ -404,7 +405,7 @@ function FetchRecipeSuperObject(recipe_id){
                 $('#recipe-content').html(info);
                 $('#nutrition-label').nutritionLabel( recipe );
                 $('#make-changes-button').click(function(e){
-                    chrome.tabs.create({url: "https://caloriemash.com/my-recipe.html?recipe_id=" + recipe_id});
+                    chrome.tabs.create({url: "https://feastmachine.com/myrecipe?recipe-id=" + recipe_id});
                 });
                 $('#export-html').click(function(){
                    var url = "https://recipecalcalc.com/api/recipe/" + recipe_id + "/nutrition-label/html";
@@ -451,8 +452,18 @@ function FetchRecipeSuperObject(recipe_id){
 }
 
 function ShowMyRecipes(){
+    currentlyShowingView="load-my-recipes";
+    if(debug){
+        console.log("Showing my recipes; First fetching my recipes.")
+    }
     FetchMyRecipesAPI({},function(success,data_in){
+        if(debug){
+            console.log("Fetched my recipes")
+        }
         if(currentlyShowingView!=="load-my-recipes"){
+            if(debug){
+                console.log("Already showing...")
+            }
             return;
         }
         if(success) {
@@ -474,6 +485,7 @@ function ShowMyRecipes(){
 }
 
 function ShowGeneralError(error_message){
+    console.error(error_message);
     getTextTemplate("general-error-template", function (source) {
         var template = Handlebars.compile(source);
         var info = template({error_message:error_message});

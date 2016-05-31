@@ -164,6 +164,10 @@
             <td><span class="macro-nutrient-number" id="protein_total">{{multiply nutrition_per_portion.protein nutrition_per_portion.portions}}g</span></td>
         </tr>
     </table>
+    <div>
+        <h1>Image</h1>
+        <img src="{{image_url}}">
+    </div>
 </script>
 
 <script id="my-recipes-template" type="text/template" charset="utf-8">
@@ -217,7 +221,7 @@
     <div class="row">
         <div class="col-md-12" style="padding:6px">
             <div id="ingredient-nutritional-breakdown-buttons" class="btn-group" role="group" aria-label="...">
-                <button id="make-changes-button" type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit the ingredients.">Edit on CalorieMash.com</button>
+                <button id="make-changes-button" type="button" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit the ingredients.">Edit on FeastMachine.com</button>
                 <button id='export-html' type='button' class='btn btn-primary btn-sm'>html</button>
                 <button id='export-csv' type='button' class='btn btn-primary btn-sm'>CSV</button>
                 <button id='export-png' type='button' class='btn btn-primary btn-sm'>PNG</button>
@@ -435,6 +439,10 @@
         </div>
         <div class="col-xs-5 col-md-3" style="padding:6px">
             <div id="nutrition-label"></div>
+        </div>
+        <div>
+            <h1>Image</h1>
+            <img src="{{.image_url}}">
         </div>
     </div>
 
