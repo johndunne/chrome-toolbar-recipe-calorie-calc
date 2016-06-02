@@ -1,6 +1,6 @@
 {
-  "name": "CalorieMash recipe nutrition calc",
-  "version": "0.0.5",
+  "name": "FeastMachine recipe nutrition",
+  "version": "0.0.7",
   "description": "A fantastic text box to copy and paste your recipe ingredients into, and see the nutritional breakdown of all of the ingredients.",
   "icons": { "128": "images/icon.png" },
   "background": { "scripts": ["background.js"] },
