@@ -8,6 +8,7 @@
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/popup.css" rel="stylesheet" type="text/css">
     <script src='jquery-1.10.2.js'> </script>
+    <script src='tether.min.js'> </script>
     <script src='bootstrap.min.js'> </script>
   </head>
   <body>
@@ -38,15 +39,7 @@
   </div>
 
 <script id="parse-ingredients-template" type="text/template" charset="utf-8">
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-7 col-md-9" style="padding-right:6px">
-                <div class="border-radius-large" id="parsed-ingredients-content"></div>
-            </div>
-            <div class="col-xs-5 col-md-3" style="padding:6px">
-                <div id="nutrition-label"></div>
-            </div>
-        </div>
+        <div class="border-radius-large" id="parsed-ingredients-content"></div>
         <form>
             <div class="container-fluid">
                 <div class="row">
@@ -123,50 +116,80 @@
 </script>
 
 <script id="recipe-template" type="text/template" charset="utf-8">
-    <div>
-        <h2 for="recipe_ingredients">Nutritional information: </h2>
-        <small>Below are the food's our sous bot has determined are in your recipe. <b>Change them by double clicking on the food item.</b></small>
-    </div>
-    {{description}}
-    <table class="table table-striped table-bordered table-condensed">
-        <tr><th>Ingredient</th><th>Calories</th><th>Amount</th><th>Fat</th><th>Carbs</th><th>Sugar</th><th>Protein</th></tr>
-        {{#nutrition}}
-          {{#if header}}
-          <tr><td colspan="6"><strong>{{ingredient_line}}</strong></td></tr>
-          {{else}}
-        <tr><td><span id="name_{{seq}}" seq="{{seq}}" changeable_food data-toggle="tooltip" title="{{debug_output}}" grams="{{amount}}" food_id="{{food_id}}">{{ingredient_line}}&nbsp;<img src="images/05-shuffle.png" width="14" height="10" changeable_food grams="{{amount}}" food_id="{{food_id}}" seq="{{seq}}" ></span></td>
-            <td><span class="calorie-number" id="calories_for_{{seq}}">{{calories}}</span></td>
-            <td><span class="macro-nutrient-number" id="amount_for_{{seq}}">{{food_weight}}{{unit}}</span></td>
-            <td><span class="macro-nutrient-number" id="total_fat_for_{{seq}}">{{total_fat}}g</span></td>
-            <td><span class="macro-nutrient-number" id="total_carbs_for_{{seq}}">{{carbs}}g</span></td>
-            <td><span class="macro-nutrient-number" id="total_sugar_for_{{seq}}">{{total_sugar}}g</span></td>
-            <td><span class="macro-nutrient-number" id="protein_for_{{seq}}">{{protein}}g</span></td>
-          </tr>
-          {{/if}}
-        {{/nutrition}}
-        {{#if nutrition_per_portion}}
-            <tr><td class="text-right">Per portion</td>
-                <td><span class="calorie-number" id="calories_per_portion">{{nutrition_per_portion.calories}}</span></td>
-                <td><span class="macro-nutrient-number" id="amount_per_portion">{{nutrition_per_portion.food_weight}}g</span></td>
-                <td><span class="macro-nutrient-number" id="total_fat_per_portion">{{nutrition_per_portion.total_fat}}g</span></td>
-                <td><span class="macro-nutrient-number" id="total_carbs_per_portion">{{nutrition_per_portion.carbs}}g</span></td>
-                <td><span class="macro-nutrient-number" id="total_sugar_per_portion">{{nutrition_per_portion.total_sugar}}g</span></td>
-                <td><span class="macro-nutrient-number" id="protein_per_portion">{{nutrition_per_portion.protein}}g</span></td>
-            </tr>
-        {{/if}}
-        <tr>
-            <td class="text-right">Total</td>
-            <td><span class="calorie-number" id="calories_total">{{multiply nutrition_per_portion.calories nutrition_per_portion.portions}}</span></td>
-            <td><span class="macro-nutrient-number" id="amount_total">{{multiply nutrition_per_portion.food_weight nutrition_per_portion.portions}}g</span></td>
-            <td><span class="macro-nutrient-number" id="total_fat_total">{{multiply nutrition_per_portion.total_fat nutrition_per_portion.portions}}g</span></td>
-            <td><span class="macro-nutrient-number" id="total_carbs_total">{{multiply nutrition_per_portion.carbs nutrition_per_portion.portions}}g</span></td>
-            <td><span class="macro-nutrient-number" id="total_sugar_total">{{multiply nutrition_per_portion.total_sugar nutrition_per_portion.portions}}g</span></td>
-            <td><span class="macro-nutrient-number" id="protein_total">{{multiply nutrition_per_portion.protein nutrition_per_portion.portions}}g</span></td>
-        </tr>
-    </table>
-    <div>
-        <h1>Image</h1>
-        <img src="{{image_url}}">
+    <div class="container">
+        <div class="row">
+            <h2>{{name}}</h2>
+        </div>
+        <div class="row">
+            <img style="margin-left: auto;margin-right: auto; max-width:300px;"  src="http:{{image_url}}" onerror="this.src = 'https:{{image_url}}';" >
+        </div>
+        <div class="row">
+            <div class="col-xs-7 col-md-9">
+                <h3 for="recipe_ingredients">Nutritional information {{num_ingredients}}: </h3>
+                <small>Below are the food's our sous bot has determined are in your recipe. <b>Change them by double clicking on the food item.</b></small>
+            </div>
+            {{description}}
+            <table class="table table-striped table-bordered table-condensed">
+                <tr><th>Ingredient</th><th>Calories</th><th>Amount</th><th>Fat</th><th>Carbs</th><th>Sugar</th><th>Protein</th></tr>
+                {{#nutrition}}
+                  {{#if header}}
+                  <tr><td colspan="6"><strong>{{ingredient_line}}</strong></td></tr>
+                  {{else}}
+                <tr>
+                    <td>
+                        <span id="name_{{seq}}" seq="{{seq}}" changeable_food data-toggle="tooltip" title="{{debug_output}}" grams="{{amount}}" food_id="{{food_id}}">
+                            {{ingredient_line}}&nbsp;<!--img src="images/05-shuffle.png" width="14" height="10" changeable_food grams="{{amount}}" food_id="{{food_id}}" seq="{{seq}}" -->
+                        </span>
+                    </td>
+                    <td><span class="calorie-number" id="calories_for_{{seq}}">{{calories}}</span></td>
+                    <td><span class="macro-nutrient-number" id="amount_for_{{seq}}">{{food_weight}}{{unit}}</span></td>
+                    <td><span class="macro-nutrient-number" id="total_fat_for_{{seq}}">{{total_fat}}g</span></td>
+                    <td><span class="macro-nutrient-number" id="total_carbs_for_{{seq}}">{{carbs}}g</span></td>
+                    <td><span class="macro-nutrient-number" id="total_sugar_for_{{seq}}">{{total_sugar}}g</span></td>
+                    <td><span class="macro-nutrient-number" id="protein_for_{{seq}}">{{protein}}g</span></td>
+                  </tr>
+                  {{/if}}
+                {{/nutrition}}
+                {{#if nutrition_per_portion}}
+                    <tr><td class="text-right">Per portion</td>
+                        <td><span class="calorie-number" id="calories_per_portion">{{nutrition_per_portion.calories}}</span></td>
+                        <td><span class="macro-nutrient-number" id="amount_per_portion">{{nutrition_per_portion.food_weight}}g</span></td>
+                        <td><span class="macro-nutrient-number" id="total_fat_per_portion">{{nutrition_per_portion.total_fat}}g</span></td>
+                        <td><span class="macro-nutrient-number" id="total_carbs_per_portion">{{nutrition_per_portion.carbs}}g</span></td>
+                        <td><span class="macro-nutrient-number" id="total_sugar_per_portion">{{nutrition_per_portion.total_sugar}}g</span></td>
+                        <td><span class="macro-nutrient-number" id="protein_per_portion">{{nutrition_per_portion.protein}}g</span></td>
+                    </tr>
+                {{/if}}
+                <tr>
+                    <td class="text-right">Total</td>
+                    <td><span class="calorie-number" id="calories_total">{{multiply nutrition_per_portion.calories nutrition_per_portion.portions}}</span></td>
+                    <td><span class="macro-nutrient-number" id="amount_total">{{multiply nutrition_per_portion.food_weight nutrition_per_portion.portions}}g</span></td>
+                    <td><span class="macro-nutrient-number" id="total_fat_total">{{multiply nutrition_per_portion.total_fat nutrition_per_portion.portions}}g</span></td>
+                    <td><span class="macro-nutrient-number" id="total_carbs_total">{{multiply nutrition_per_portion.carbs nutrition_per_portion.portions}}g</span></td>
+                    <td><span class="macro-nutrient-number" id="total_sugar_total">{{multiply nutrition_per_portion.total_sugar nutrition_per_portion.portions}}g</span></td>
+                    <td><span class="macro-nutrient-number" id="protein_total">{{multiply nutrition_per_portion.protein nutrition_per_portion.portions}}g</span></td>
+                </tr>
+            </table>
+        </div>
+        <div  class="row">
+            <div style="padding:6px">
+                <div id="nutrition-label"></div>
+            </div>
+        </div>
+        <div class="row">
+            <table style="width:100%">
+                <tr>
+                    <th>Cook / Prep</th>
+                    <td nowrap>{{cook_time}} / {{prep_time}}</td>
+                    <th>Rating</th>
+                    <td>{{rating}} ({{rating_count}})</td>
+                    <th>Yield</th>
+                    <td>{{recipe_yield}}</td>
+                    <th>Ratings</th>
+                    <td>{{best_rating}} {{average_rating}} {{worst_rating}}</td>
+                </tr>
+            </table>
+        </div>
     </div>
 </script>
 
@@ -218,6 +241,12 @@
 </script>
 
 <script id="super-recipe-template" type="text/template" charset="utf-8">
+    <div class="row">
+        <h2>{{name}}</h2>
+    </div>
+    <div class="row">
+        <img style="margin-left: auto;margin-right: auto; max-width:300px;" src="http:{{image_url}}" onerror="this.src = 'https:{{image_url}}';" >
+    </div>
     <div class="row">
         <div class="col-md-12" style="padding:6px">
             <div id="ingredient-nutritional-breakdown-buttons" class="btn-group" role="group" aria-label="...">
@@ -439,10 +468,6 @@
         </div>
         <div class="col-xs-5 col-md-3" style="padding:6px">
             <div id="nutrition-label"></div>
-        </div>
-        <div>
-            <h1>Image</h1>
-            <img src="{{.image_url}}">
         </div>
     </div>
 

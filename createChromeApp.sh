@@ -22,4 +22,4 @@ zip -r caloriemash.xpi *
 mv caloriemash.xpi ../caloriemash.xpi
 
 cd ../
-#rm -rf dist
+rm -rf dist

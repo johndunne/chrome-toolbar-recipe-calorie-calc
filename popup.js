@@ -34,11 +34,14 @@ function _internalUpdateUIWithParsedIngredients(){
       if( recipe===false ){
           ShowGeneralError(error);
       }else {
-          $('#nutrition-label').nutritionLabel( recipe );
           getTextTemplate("recipe-template", function (source) {
               var template = Handlebars.compile(source);
               var info = template(recipe);
               $('#parsed-ingredients-content').html(info);
+              $('#nutrition-label').nutritionLabel(recipe);
+
+              $('[data-toggle="tooltip"]').tooltip()
+
           });
       }
   });
@@ -55,8 +58,6 @@ function b64_to_utf8( str ) {
 function map() {
     var initaliser = {scheme: "https", debug: false,enable_persistent_visitor:true,application_name:"CalorieMash chrome ext"};
     initRecipeCalCalc("recipecalcalc.com/api", initaliser,function(success,data){
-        console.error(success);
-        console.error(data);
         if(data) {
             chrome.extension.getBackgroundPage().userId = data.userId ? data.userId : false;
             chrome.extension.getBackgroundPage().apiKey = data.apiKey ? data.apiKey : false;
@@ -214,6 +215,8 @@ function map() {
                                 var template = Handlebars.compile(source);
                                 var info = template(recipe);
                                 $('#parsed-ingredients-content').html(info);
+                                $('#nutrition-label').nutritionLabel(recipe);
+                                $('[data-toggle="tooltip"]').tooltip()
                             });
                         }
                     });
@@ -267,7 +270,6 @@ function map() {
                                     var template = Handlebars.compile(source);
                                     var info = template({});
                                     $('#recipe-content').html(info);
-                                    $('#nutrition-label').nutritionLabel( super_recipe );
                                     $("#recipe_ingredients").html(super_recipe.ingredients);
                                     $("#recipe_portions").val(super_recipe.portions);
                                     $("#recipe_name").val(super_recipe.name);
@@ -275,6 +277,7 @@ function map() {
                                         var template = Handlebars.compile(source);
                                         var info = template(super_recipe);
                                         $('#parsed-ingredients-content').html(info);
+                                        $('#nutrition-label').nutritionLabel( super_recipe );
                                     });
                                     $("#save-recipe").click(function () {
                                         console.log("Saving recipe by creating:");
