@@ -1,7 +1,7 @@
 #!/bin/bash
 
-rm -f caloriemash.xpi
-rm -f caloriemash.zip
+rm -f feastmachine.xpi
+rm -f feastmachine.zip
 
 mkdir dist
 rsync --exclude dist --exclude .DS_Store --exclude bower_components --exclude .idea --exclude .git --exclude .gitignore --exclude pullSupportedSites.sh --exclude sites.list --exclude *.sh -av . dist
@@ -15,11 +15,11 @@ cp caloriemash.zip ../caloriemash.zip
 rm -f caloriemash.zip
 
 sed -i.bak '/^}/d' manifest.json
-echo ', "applications": { "gecko": { "id": "john@caloriemash.com"}}' >> manifest.json
+echo ', "applications": { "gecko": { "id": "john@feastmachine.com"}}' >> manifest.json
 echo '}' >> manifest.json
 
-zip -r caloriemash.xpi *
-mv caloriemash.xpi ../caloriemash.xpi
+zip -r feastmachine.xpi *
+mv feastmachine.xpi ../feastmachine.xpi
 
 cd ../
 rm -rf dist

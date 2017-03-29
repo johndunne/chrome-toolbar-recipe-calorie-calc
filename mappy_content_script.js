@@ -7,8 +7,7 @@ if (window == top) {
     }
 }
 
-if ( document.URL.indexOf("caloriemash.com") >=0 ){
-    //if(debug)console.log("document.URL is caloriemash");
+if ( document.URL.indexOf("feastmachine.com") >=0 ){
     // Add a script to the head that will init the initRecipeCalCalc method for the caloriemash page
     chrome.runtime.sendMessage({method: "id-data"}, function(response) {
         if ( response ) {

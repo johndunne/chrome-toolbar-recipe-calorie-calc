@@ -5,14 +5,13 @@
   "icons": { "128": "images/icon.png" },
   "background": { "scripts": ["background.js"] },
   "content_scripts": [
-    { "matches": ["*://*/*"], "js": ["mappy_content_script.js"],"run_at":"document_idle" }
+    { "matches": ["*://*/*"], "js": ["mappy_content_script.js","lock.min.js"],"run_at":"document_idle" }
   ],
   "permissions": [
     "contextMenus",
     "storage",
     "tabs",
-    "https://recipecalcalc.com/*",
-    "https://api.recipecalcalc.com/*",
+    "https://api2.cheerychow.com/*",
     "http://localhost:1243/*"
   ],
   "browser_action": {
@@ -21,5 +20,5 @@
       "default_popup": "popup.html"
   },
   "manifest_version": 2,
-  "content_security_policy": "default-src 'none'; style-src 'self' 'unsafe-inline' http://fonts.googleapis.com/css?family=Archivo+Black; script-src 'self' 'unsafe-eval'; object-src 'self'; connect-src https://recipecalcalc.com/ http://localhost:1243/; img-src 'self' https: http: blob: data:;font-src 'self' http://fonts.gstatic.com/s/archivoblack/v4/*.woff2;frame-src 'self' https://recipecalcalc.com/"
+  "content_security_policy": "default-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/css?family=Archivo+Black;script-src 'self' 'unsafe-eval'; object-src 'self'; connect-src https://api2.cheerychow.com/ http://localhost:1243/; img-src 'self' https: http: blob: data:;font-src 'self' https://fonts.gstatic.com/s/archivoblack/v4/WoAoVT7K3k7hHfxKbvB6ByJje69WtxeuVwfFBU1mdJw.woff2;frame-src 'self' https://api2.cheerychow.com/"
 }

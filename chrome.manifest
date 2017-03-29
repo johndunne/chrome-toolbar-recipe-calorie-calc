@@ -1,5 +1,5 @@
 {
-  "name": "CalorieMash recipe nutrition calc",
+  "name": "FeastMachine  recipe nutrition calc",
   "version": "0.0.3",
   "description": "A fantastic text box to copy and paste your recipe ingredients into, and see the nutritional breakdown of all of the ingredients.",
   "icons": { "128": "images/icon.png" },
@@ -9,15 +9,16 @@
   ],
   "applications": {
     "gecko": {
-      "id": "john@caloriemash.com"
+      "id": "john@feastmachine.com"
     }
   },
   "permissions": [
     "contextMenus",
     "storage",
     "tabs",
-    "https://recipecalcalc.com/*",
-    "https://api.recipecalcalc.com/*",
+    "https://feastmachine.com/*",
+    "https://cheerychow.com/*",
+    "https://api2.cheerychow.com/*",
     "http://localhost:1243/*"
   ],
   "browser_action": {
@@ -26,5 +27,5 @@
       "default_popup": "popup.html"
   },
   "manifest_version": 2,
-  "content_security_policy": "default-src 'none'; style-src 'self' 'unsafe-inline' http://fonts.googleapis.com/css?family=Archivo+Black; script-src 'self' 'unsafe-eval'; object-src 'self'; connect-src https://recipecalcalc.com/ http://localhost:1243/; img-src '*' 'unsafe-inline' data: ;font-src 'self' http://fonts.gstatic.com/s/archivoblack/v4/*.woff2;frame-src 'self' https://recipecalcalc.com/"
+  "content_security_policy": "default-src 'none'; style-src 'self' 'unsafe-inline' http://fonts.googleapis.com/css?family=Archivo+Black; script-src 'self' 'unsafe-eval'; object-src 'self'; connect-src https://api2.cheerychow.com/ http://localhost:1243/; img-src '*' 'unsafe-inline' data: ;font-src 'self' http://fonts.gstatic.com/s/archivoblack/v4/*.woff2;frame-src 'self' https://feastmachine.com/"
 }

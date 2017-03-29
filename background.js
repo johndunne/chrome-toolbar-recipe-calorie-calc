@@ -16,11 +16,7 @@ var apiKey = false;
  // The code below is sample code for enabling right click features in a plugin
 // See: https://developer.chrome.com/extensions/contextMenus#type-ContextType
 parseCalorieMash = function(word){
-    if(debugMode)console.log("Received parse request");
     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-        if(debugMode)console.log("The current tab is:");
-        if(debugMode)console.log(tabs[0]);
-        if(debugMode)console.log("Sending message to current tab:");
         chrome.tabs.sendMessage(tabs[0].id, {method: "getSelection"},
             function (response) {
                 if(response) {
@@ -28,7 +24,7 @@ parseCalorieMash = function(word){
                     if(debugMode)console.log(response);
                     var query = response.data;
                     var recipe_url = response.recipe_url; // The recipe_url can help provide recipe name, and
-                    postData("https://caloriemash.com/ingredient-calories.html", {
+                    postData("https://feastmachine.com/calorie-calculator", {
                         "ingredients": query,
                         "recipe_url": recipe_url
                     });
@@ -65,7 +61,7 @@ sourceCalorieMash = function(word){
                     var query = response.source;
                     var b64 = utf8_to_b64(query);
                     var recipe_url = response.recipe_url; // The recipe_url can help provide recipe name, and
-                    postData("https://caloriemash.com/ingredient-calories.html", {
+                    postData("https://feastmachine.com/calorie-calculator", {
                         "page_source_b": b64,
                         "recipe_url": recipe_url
                     });
